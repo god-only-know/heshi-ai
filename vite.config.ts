@@ -17,7 +17,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       host: true,
       port: 3000,
       proxy: {
-        '/api': {
+        '/api$': {
           target: '', // Your backend API base URL
           ws: false,
           changeOrigin: true,

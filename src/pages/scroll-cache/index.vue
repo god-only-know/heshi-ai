@@ -68,12 +68,3 @@ onBeforeRouteLeave(() => {
     </ul>
   </van-list>
 </template>
-
-<route lang="json5">
-{
-  name: 'ScrollCache',
-  meta: {
-    keepAlive: true
-  },
-}
-</route>

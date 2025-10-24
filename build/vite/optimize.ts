@@ -24,9 +24,6 @@ const include = [
   'vant/es/tabbar-item/style/index',
   'vant/es/list/style/index',
   'vant/es/text-ellipsis/style/index',
-  'unplugin-vue-router/runtime',
-  'unplugin-vue-router/data-loaders',
-  'unplugin-vue-router/data-loaders/basic',
 ]
 
 const exclude = [

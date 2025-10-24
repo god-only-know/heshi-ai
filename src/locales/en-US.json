@@ -129,5 +129,14 @@
     "logout": "Sign Out",
     "currentVersion": "Current Version",
     "confirmTitle": "Confirm Exit?"
+  },
+
+  "clochat": {
+    "navbar": {
+      "chat": "Chat",
+      "friend": "Friends",
+      "activity": "Activity",
+      "my": "My"
+    }
   }
 }

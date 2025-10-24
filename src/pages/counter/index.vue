@@ -12,9 +12,3 @@ const { counter } = storeToRefs(counterStore)
     <van-stepper v-model="counter" />
   </div>
 </template>
-
-<route lang="json5">
-{
-  name: 'Counter'
-}
-</route>

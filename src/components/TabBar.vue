@@ -1,29 +1,19 @@
 <script setup lang="ts">
-import { rootRouteList } from '@/config/routes'
-
-const active = ref(0)
-const route = useRoute()
-
-const show = computed(() => {
-  if (route.name && rootRouteList.includes(route.name)) {
-    return true
-  }
-  return false
-})
+const props = defineProps<{
+  tabs: Array<{
+    name: string
+    icon: string
+    path: string
+  }>
+}>()
 </script>
 
 <template>
-  <van-tabbar v-if="show" v-model="active" route placeholder>
-    <van-tabbar-item replace to="/">
-      {{ $t('tabbar.home') }}
+  <van-tabbar route placeholder>
+    <van-tabbar-item v-for="item in props.tabs" :key="item.path" replace :to="item.path" :name="item.path">
+      {{ item.name }}
       <template #icon>
-        <div class="i-carbon:home" />
-      </template>
-    </van-tabbar-item>
-    <van-tabbar-item replace to="/profile">
-      {{ $t('tabbar.profile') }}
-      <template #icon>
-        <div class="i-carbon:user" />
+        <div :class="item.icon" />
       </template>
     </van-tabbar-item>
   </van-tabbar>

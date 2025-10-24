@@ -11,9 +11,3 @@
     {{ $t('unocss.button') }}
   </button>
 </template>
-
-<route lang="json5">
-{
-  name: 'UnoCSS'
-}
-</route>

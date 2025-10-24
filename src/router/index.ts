@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router/auto'
-import { handleHotUpdate, routes } from 'vue-router/auto-routes'
+import { createRouter, createWebHistory } from 'vue-router'
+import routers from './routers'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -11,15 +11,11 @@ import { isLogin } from '@/utils/auth'
 import setPageTitle from '@/utils/set-page-title'
 
 NProgress.configure({ showSpinner: true, parent: '#app' })
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_APP_PUBLIC_PATH),
-  routes,
+  routes: routers,
 })
-
-// This will update routes at runtime without reloading the page
-if (import.meta.hot)
-  handleHotUpdate(router)
+console.log(router, 'router')
 
 router.beforeEach(async (to: EnhancedRouteLocation) => {
   NProgress.start()
@@ -28,10 +24,13 @@ router.beforeEach(async (to: EnhancedRouteLocation) => {
   const userStore = useUserStore()
 
   // Route cache
+  if (to.redirectedFrom) {
+    routeCacheStore.addRoute(to.redirectedFrom)
+  }
   routeCacheStore.addRoute(to)
 
   // Set page title
-  setPageTitle(to.name)
+  setPageTitle(String(to?.name))
 
   if (isLogin() && !userStore.userInfo?.uid)
     await userStore.info()
@@ -40,5 +39,4 @@ router.beforeEach(async (to: EnhancedRouteLocation) => {
 router.afterEach(() => {
   NProgress.done()
 })
-
 export default router

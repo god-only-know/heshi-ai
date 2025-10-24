@@ -37,9 +37,3 @@ function Logout() {
   --van-cell-text-color: var(--van-red);
 }
 </style>
-
-<route lang="json5">
-{
-  name: 'Settings'
-}
-</route>

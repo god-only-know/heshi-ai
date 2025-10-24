@@ -19,7 +19,7 @@ export default defineConfig({
     presetWind4({
       preflights: {
         theme: {
-          process: createRemToPxProcessor(BASE_FONT_SIZE),
+          // process: createRemToPxProcessor(BASE_FONT_SIZE),
         },
       },
     }),
@@ -29,7 +29,7 @@ export default defineConfig({
     }),
   ],
   postprocess: [
-    createRemToPxProcessor(BASE_FONT_SIZE),
+    // createRemToPxProcessor(BASE_FONT_SIZE),
   ],
   transformers: [
     transformerDirectives(),

@@ -12,12 +12,3 @@ const value = ref(0)
     <van-stepper v-model="value" />
   </div>
 </template>
-
-<route lang="json5">
-{
-  name: 'KeepAlive',
-  meta: {
-    keepAlive: true
-  },
-}
-</route>

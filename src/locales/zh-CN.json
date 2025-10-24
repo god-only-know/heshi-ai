@@ -3,49 +3,44 @@
     "name": "Vue3 移动端模板",
     "description": "一个基于 Vue 3 生态系统的移动 web 应用模板"
   },
-
   "navbar": {
     "Home": "主页",
-    "Profile": "我的",
-    "Mock": "🗂️ Mock",
-    "Charts": "📊 图表",
-    "UnoCSS": "⚡ UnoCSS",
-    "Counter": "🍍 状态持久化",
-    "KeepAlive": "♻️ 页面缓存",
-    "ScrollCache": "📍 滚动缓存",
-    "Login": "🧑‍💻 登录",
-    "Register": "🧑‍💻 注册",
-    "ForgotPassword": "❓ 忘记密码",
-    "Settings": "⚙️ 设置",
-    "404": "⚠️ 404 页面",
-    "Undefined": "🤷 未定义标题"
+    "Mock": "Mock",
+    "Charts": "图表",
+    "UnoCSS": "UnoCSS",
+    "Counter": "状态持久化",
+    "KeepAlive": "页面缓存",
+    "ScrollCache": "滚动缓存",
+    "Login": "登录",
+    "Register": "注册",
+    "ForgotPassword": "忘记密码",
+    "Settings": "设置",
+    "404": "404 页面",
+    "Undefined": "未定义标题",
+    "ApiSetting": "API管理",
+    "Clochat": "Clochat"
   },
-
   "tabbar": {
     "home": "首页",
     "profile": "我的"
   },
-
   "home": {
     "darkMode": "🌗 深色模式",
     "language": "📚 多语言",
     "settings": "设置",
     "examples": "示例"
   },
-
   "profile": {
     "login": "登录",
     "settings": "设置",
     "docs": "文档"
   },
-
   "mock": {
     "fromAsyncData": "来自异步请求的数据",
     "noData": "暂无数据",
     "pull": "请求",
     "reset": "清空"
   },
-
   "charts": {
     "January": "1月",
     "February": "2月",
@@ -54,28 +49,23 @@
     "May": "5月",
     "June": "6月"
   },
-
   "counter": {
     "description": "该计数器的状态通过 Pinia 持久化。刷新页面试试看！"
   },
-
   "unocss": {
     "title": "你好, Unocss!",
     "description": "这是一个简单的 Unocss 使用示例。",
     "button": "按钮"
   },
-
   "keepAlive": {
     "label": "当前组件将会被缓存"
   },
-
   "scrollCache": {
     "sectionTitle": "段落标题",
     "sectionText": "段落内容段落内容段落内容段落内容段落内容段落内容",
     "finished": "已经到底啦 ~",
     "loading": "加载中..."
   },
-
   "login": {
     "login": "登录",
     "logout": "退出登录",
@@ -86,7 +76,6 @@
     "signUp": "还没有账号？点击注册",
     "forgotPassword": "忘记密码？"
   },
-
   "forgotPassword": {
     "email": "邮箱",
     "code": "验证码",
@@ -104,7 +93,6 @@
     "sendCodeSuccess": "已发送，验证码为",
     "passwordResetSuccess": "密码重置成功"
   },
-
   "register": {
     "email": "邮箱",
     "code": "验证码",
@@ -124,10 +112,47 @@
     "sendCodeSuccess": "已发送，验证码为",
     "registerSuccess": "注册成功"
   },
-
   "settings": {
     "logout": "退出登录",
     "currentVersion": "当前版本",
     "confirmTitle": "确认退出？"
+  },
+  "apiSetting": {
+    "selectSetting": "请选择配置",
+    "add": "另存为",
+    "save": "保存",
+    "delete": "删除",
+    "apiUrl": "自定义 API URL",
+    "apiKey": "密钥",
+    "modelPreview": "请选择模型列表预览",
+    "test": "测试",
+    "connect": "连接",
+    "mainModel": "主对话模型",
+    "configList": "配置列表一览",
+    "applyToAll": "是否应用于全部场景",
+    "otherModels": "其它场景使用的模型",
+    "modelLibrary": "模型库",
+    "model": "模型",
+    "saveSuccess": "已保存配置",
+    "deleteSuccess": "已删除配置",
+    "deleteConfirm": "确认删除该配置？",
+    "testing": "正在测试模型……",
+    "connectSuccess": "连接成功",
+    "noModels": "没有模型",
+    "scenes": {
+      "summary": "摘要总结",
+      "dynamic": "动态生成"
+    }
+  },
+  "clochat": {
+    "navbar": {
+      "chat": "对话",
+      "friend": "好友",
+      "activity": "动态",
+      "my": "我的"
+    },
+    "notify": {
+      "noChat": "无对话"
+    }
   }
 }

@@ -100,9 +100,3 @@ async function login(values: any) {
     </GhostButton>
   </div>
 </template>
-
-<route lang="json5">
-{
-  name: 'Login'
-}
-</route>
