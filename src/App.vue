@@ -25,12 +25,12 @@ useHead({
   ],
 })
 
-const routeCacheStore = useRouteCacheStore()
+// const routeCacheStore = useRouteCacheStore()
 
-const keepAliveRouteNames = computed(() => {
-  return routeCacheStore.routeCaches
-})
-
+// const keepAliveRouteNames = computed(() => {
+//   return routeCacheStore.routeCaches
+// })
+// console.log(keepAliveRouteNames.value)
 const mode = computed(() => {
   return isDark.value ? 'dark' : 'light'
 })
@@ -38,15 +38,24 @@ const mode = computed(() => {
 
 <template>
   <van-config-provider :theme="mode">
-    <nav-bar />
-    <router-view v-slot="{ Component }">
-      <section class="app-wrapper">
-        <keep-alive :include="keepAliveRouteNames">
-          <component :is="Component" />
-        </keep-alive>
-      </section>
-    </router-view>
-    <tab-bar />
+    <transition-group name="slide">
+      <router-view v-slot="{ Component, route }">
+        <transition name="slide">
+          <section v-if="route.path" class="app-wrapper">
+            <keep-alive>
+              <component
+                :is="Component"
+                v-if="route.meta.keepAlive"
+              />
+            </keep-alive>
+            <component
+              :is="Component"
+              v-if="!route.meta.keepAlive"
+            />
+          </section>
+        </transition>
+      </router-view>
+    </transition-group>
   </van-config-provider>
 </template>
 
@@ -54,6 +63,21 @@ const mode = computed(() => {
 .app-wrapper {
   width: 100%;
   position: relative;
-  padding: 16px;
+  height: 100vh;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  position: absolute;
+  width: 100%;
+}
+
+.slide-enter-from {
+  transform: translateX(100%);
+}
+
+.slide-leave-to {
+  transform: translateX(-100%);
 }
 </style>

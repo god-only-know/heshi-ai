@@ -60,9 +60,3 @@ const scoreOption = ref({
   <Chart :option="lineOption" :style="{ height: '330px' }" />
   <Chart :option="scoreOption" :style="{ height: '330px' }" />
 </template>
-
-<route lang="json5">
-{
-  name: 'Charts'
-}
-</route>

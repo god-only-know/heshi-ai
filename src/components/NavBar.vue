@@ -1,50 +1,44 @@
 <script setup lang="ts">
-import { rootRouteList } from '@/config/routes'
+import { useI18n } from 'vue-i18n'
 
-const route = useRoute()
-const router = useRouter()
-const { t } = useI18n()
-
-/**
- * Get page title
- * Located in src/locales/json
- */
-const title = computed(() => {
-  if (route.name) {
-    return t(`navbar.${route.name}`)
-  }
-
-  return t('navbar.Undefined')
-})
-
-/**
- * Show the left arrow
- * If route name is in rootRouteList, hide left arrow
- */
-const showLeftArrow = computed(() => {
-  if (route.name && rootRouteList.includes(route.name)) {
-    return false
-  }
-
-  return true
-})
-
-function onBack() {
-  if (window.history.state.back) {
-    history.back()
-  }
-  else {
-    router.replace('/')
-  }
+interface NavBarProps {
+  leftArrow?: boolean
+  rightArrow?: boolean
+  title?: string
 }
+
+const props = withDefaults(defineProps<NavBarProps>(), {
+  leftArrow: false,
+  rightArrow: false,
+  title: '',
+})
+const { t } = useI18n()
+const router = useRouter()
+const route = useRoute()
+function onBack() {
+  router.replace('/')
+}
+const title = computed(() => {
+  return props.title || (route.meta?.title && t(route.meta?.title))
+})
 </script>
 
 <template>
   <VanNavBar
-    :title="title"
-    :fixed="true"
-    :left-arrow="showLeftArrow"
-    placeholder clickable
+    :title="title" :fixed="true" :left-arrow="props.leftArrow" placeholder clickable
     @click-left="onBack"
-  />
+  >
+    <template #right>
+      <slot name="right" />
+    </template>
+  </VanNavBar>
 </template>
+
+<!-- <style lang="less">
+:root {
+  --van-nav-bar-background: rgba(28, 28, 28, 0.8);
+  --van-nav-bar-text-color: #fff;
+  --van-nav-bar-icon-color: #fff;
+  --van-nav-bar-title-text-color: #fff;
+}
+</style> -->

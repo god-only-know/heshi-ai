@@ -13,14 +13,15 @@ function login() {
 
   router.push({ name: 'Login', query: { redirect: 'Profile' } })
 }
+console.log('my')
 </script>
 
 <template>
-  <div>
+  <div class="bg-white h-full">
     <VanCellGroup :inset="true">
       <van-cell center :is-link="!isLogin" @click="login">
         <template #title>
-          <van-image :src="userInfo.avatar || defaultAvatar" round class="h-56 w-56" />
+          <van-image :src="userInfo.avatar || defaultAvatar" round class="h-10 w-10" />
         </template>
 
         <template #value>
@@ -30,7 +31,7 @@ function login() {
       </van-cell>
     </VanCellGroup>
 
-    <VanCellGroup :inset="true" class="!mt-16">
+    <VanCellGroup :inset="true" class="!mt-2">
       <van-cell :title="$t('profile.settings')" icon="setting-o" is-link to="/settings">
         <template #icon>
           <div class="i-carbon:settings text-gray-400 mr-5 self-center" />
@@ -44,9 +45,3 @@ function login() {
     </VanCellGroup>
   </div>
 </template>
-
-<route lang="json5">
-{
-  name: 'Profile'
-}
-</route>

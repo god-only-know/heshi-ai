@@ -33,12 +33,6 @@ function pull() {
   </van-space>
 </template>
 
-<route lang="json5">
-{
-  name: 'Mock',
-}
-</route>
-
 <style lang="less" scoped>
 .data-label {
   color: #969799;

@@ -136,9 +136,3 @@ async function getCode() {
     </GhostButton>
   </div>
 </template>
-
-<route lang="json5">
-{
-  name: 'ForgotPassword'
-}
-</route>
