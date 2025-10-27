@@ -10,6 +10,8 @@ declare namespace Clochat {
     chat_id: string
     create_time: number
     friend_id: string
+    last_message?: string
+    last_message_time?: number
   }
   interface ChatRecordItem {
     chat_record_id: string

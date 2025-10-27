@@ -7,6 +7,7 @@ import 'virtual:uno.css'
 import '@/styles/app.less'
 import '@/styles/var.less'
 import { i18n } from '@/utils/i18n'
+import { initServer } from '@/server'
 
 // Vant 桌面端适配
 import '@vant/touch-emulator'
@@ -29,5 +30,12 @@ app.use(head)
 app.use(router)
 app.use(pinia)
 app.use(i18n)
+
+// 初始化服务（包括数据库）
+initServer().then(() => {
+  console.log('服务初始化成功')
+}).catch((error) => {
+  console.error('服务初始化失败:', error)
+})
 
 app.mount('#app')

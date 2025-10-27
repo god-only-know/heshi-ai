@@ -17,11 +17,12 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       host: true,
       port: 3000,
       proxy: {
-        '/api$': {
-          target: '', // Your backend API base URL
+        '/api': {
+          target: 'http://localhost:3000', // 指向本地服务器
           ws: false,
           changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, ''),
+          // 不要重写路径，因为我们的mock服务需要完整的/api路径
+          // rewrite: path => path.replace(/^\/api/, ''),
         },
       },
     },
