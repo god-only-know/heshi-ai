@@ -1,5 +1,3 @@
-import { createRemToPxProcessor } from '@unocss/preset-wind4/utils'
-
 import {
   defineConfig,
   presetAttributify,
@@ -9,7 +7,7 @@ import {
   transformerVariantGroup,
 } from 'unocss'
 
-const BASE_FONT_SIZE = 4
+// const BASE_FONT_SIZE = 4
 
 export default defineConfig({
   shortcuts: [

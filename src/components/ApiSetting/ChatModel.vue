@@ -31,6 +31,7 @@ function getModelText(key: string) {
   const modelId = modelForm.value[key]
   console.log(modelId)
   const findItem = settingList.value.find(item => item.id === modelId)
+
   return findItem?.name || t('apiSetting.configList')
 }
 </script>
