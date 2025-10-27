@@ -89,8 +89,8 @@ export function createVitePlugins(mode: string) {
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'safari-pinned-tab.svg'],
       manifest: {
-        name: 'vue3-vant-mobile',
-        short_name: 'vue3-vant-mobile',
+        name: 'heshi-ai',
+        short_name: 'heshi-ai',
         theme_color: '#ffffff',
         icons: [
           {

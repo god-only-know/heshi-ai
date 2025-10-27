@@ -37,7 +37,7 @@ console.log('my')
           <div class="i-carbon:settings text-gray-400 mr-5 self-center" />
         </template>
       </van-cell>
-      <van-cell :title="$t('profile.docs')" is-link url="https://vue-zone.github.io/docs/vue3-vant-mobile/">
+      <van-cell :title="$t('profile.docs')" is-link url="https://vue-zone.github.io/docs/heshi-ai/">
         <template #icon>
           <div class="i-carbon:doc text-gray-400 mr-5 self-center" />
         </template>
