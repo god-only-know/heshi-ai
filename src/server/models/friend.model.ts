@@ -1,5 +1,10 @@
 // 定义Friend模型
-export interface FriendModel extends Clochat.FriendItem {}
+export interface FriendModel {
+  friend_id: string
+  friend_name: string
+  friend_avatar: string
+  friend_introduce: string
+}
 
 // 定义表结构
 export const friendTableSchema = 'friend_id, friend_name, friend_avatar, friend_introduce'

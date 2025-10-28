@@ -12,11 +12,20 @@ const props = withDefaults(defineProps<NavBarProps>(), {
   rightArrow: false,
   title: '',
 })
+const attrs = useAttrs()
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 function onBack() {
-  router.replace('/')
+  // 如果父组件传递了事件，优先执行父组件逻辑
+  if ('onClickLeft' in attrs && typeof attrs.onClickLeft === 'function') {
+    // 触发父组件传递的事件（注意：Vue 会将事件名转为驼峰式）
+    attrs.onClickLeft?.()
+  }
+  else {
+    // 否则执行默认逻辑
+    router.replace('/')
+  }
 }
 const title = computed(() => {
   return props.title || (route.meta?.title && t(route.meta?.title))
@@ -25,7 +34,7 @@ const title = computed(() => {
 
 <template>
   <VanNavBar
-    :title="title" :fixed="true" :left-arrow="props.leftArrow" placeholder clickable
+    :title="title" :left-arrow="props.leftArrow" placeholder clickable
     @click-left="onBack"
   >
     <template #right>

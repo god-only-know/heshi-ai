@@ -1,5 +1,11 @@
 // 定义ChatRecord模型
-export interface ChatRecordModel extends Clochat.ChatRecordItem {}
+export interface ChatRecordModel {
+  chat_record_id: string
+  create_time: number
+  chat_id: string
+  content: string
+  type: string
+}
 
 // 定义表结构
 export const chatRecordTableSchema = 'chat_record_id, create_time, chat_id, content, type'

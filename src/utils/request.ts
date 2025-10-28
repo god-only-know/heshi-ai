@@ -2,7 +2,7 @@ import type { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { showNotify } from 'vant'
 import { STORAGE_TOKEN_KEY } from '@/stores/mutation-type'
-import { createLocalRequestHandler } from '@/server/api/request-handler'
+import { createLocalRequestHandler } from '@/server/api'
 
 declare module 'axios' {
   export interface AxiosResponse<T = any> {

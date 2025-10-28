@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { queryProse } from '@/api'
-
 const messages = ref<string>('')
 
 function pull() {
-  queryProse().then(({ code, result }) => {
-    if (code === 0)
-      messages.value = result
-  })
+
 }
 </script>
 

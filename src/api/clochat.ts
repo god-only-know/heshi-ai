@@ -26,15 +26,15 @@ export function getChats() {
   return request.post('/clochat/chats/list')
 }
 
-export function getChatById(chatId: string) {
-  return request.post('/clochat/chats/detail', { chatId })
+export function getChatDetail(chat_id: string) {
+  return request.post<Api.Clochat.getChatDetailResult>('/clochat/chats/detail', { chat_id })
 }
 
 export function getChatByFriendId(friendId: string) {
   return request.post('/clochat/chats/friend', { friendId })
 }
 
-export function addChat(data: Clochat.AddChatParams) {
+export function addChat(data: Api.Clochat.AddChatParams) {
   return request.post('/clochat/chats', data)
 }
 
@@ -47,7 +47,7 @@ export function getChatRecords(chatId: string) {
   return request.post('/clochat/chat-records/list', { chatId })
 }
 
-export function addChatRecord(data: Clochat.AddRecordParams) {
+export function addChatRecord(data: Api.Clochat.AddRecordParams) {
   return request.post('/clochat/chat-records', data)
 }
 

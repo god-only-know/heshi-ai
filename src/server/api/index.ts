@@ -1,78 +1,139 @@
-import { chatRecordService, chatService, friendService } from '@/server'
+import clochatApis from './clochat'
+import type { InternalAxiosRequestConfig } from 'axios'
+import { isEmpty } from 'lodash-es'
 
-// 好友相关API
-export function getFriends() {
-  return friendService.getAllFriends()
+// 构建请求处理函数
+const apiMap = clochatApis.reduce((acc, api) => {
+  const key = `${api.method} ${api.path}`
+  acc[key] = api.handler
+  return acc
+}, {})
+// 构建响应数据
+export function builder(data: unknown, message = 'success', code = 0) {
+  // 响应体结构
+  const responseBody = {
+    message: '',
+    timestamp: 0,
+    result: data,
+    code: 0,
+  }
+
+  if (message !== undefined && message !== null)
+    responseBody.message = message
+
+  if (code !== undefined && code !== 0)
+    responseBody.code = code
+
+  responseBody.timestamp = new Date().getTime()
+  return responseBody
 }
 
-export function getFriendById(data: { friendId: string }) {
-  return friendService.getFriendById(data.friendId)
+// 处理API请求并返回结果
+export async function handleApiRequest(apiKey: string, config: InternalAxiosRequestConfig) {
+  try {
+    // 精确匹配
+    if (apiMap[apiKey]) {
+      const requestParams = config.data || config.params
+
+      const response = await apiMap[apiKey](requestParams)
+      const builtResponse = builder(response)
+
+      console.groupCollapsed(`\x1B[34m 模拟请求 \x1B[0m | ${config.method?.toUpperCase()} ${config.url}`)
+      if (requestParams && !isEmpty(requestParams)) {
+        console.log('\x1B[36m%s\x1B[0m', '👉 请求参数:')
+        console.dir(requestParams, { depth: null, colors: true })
+      }
+      console.log('\x1B[33m%s\x1B[0m', '✅ 响应数据:')
+      console.dir(builtResponse, { depth: null, colors: true })
+      console.groupEnd()
+
+      return builtResponse
+    }
+
+    // 处理带参数的路径
+    const [method, path] = apiKey.split(' ')
+    const pathSegments = path.split('/')
+
+    for (const key in apiMap) {
+      const [apiMethod, apiPath] = key.split(' ')
+      if (apiMethod !== method)
+        continue
+
+      const apiPathSegments = apiPath.split('/')
+      if (apiPathSegments.length !== pathSegments.length)
+        continue
+
+      let match = true
+      const params: Record<string, string> = {}
+
+      for (let i = 0; i < apiPathSegments.length; i++) {
+        const apiSegment = apiPathSegments[i]
+        const pathSegment = pathSegments[i]
+
+        if (apiSegment.startsWith(':')) {
+          // 参数匹配
+          const paramName = apiSegment.substring(1)
+          params[paramName] = pathSegment
+        }
+        else if (apiSegment !== pathSegment) {
+          match = false
+          break
+        }
+      }
+
+      if (match) {
+        const requestParams = { ...config.params, ...params }
+        if (config.data) {
+          requestParams.body = config.data
+        }
+        const response = await apiMap[key](requestParams)
+        const builtResponse = builder(response)
+
+        console.groupCollapsed(`\x1B[34m 模拟请求 \x1B[0m | ${config.method?.toUpperCase()} ${config.url}`)
+        if (requestParams && !isEmpty(requestParams)) {
+          console.log('\x1B[36m%s\x1B[0m', '👉 请求参数:')
+          console.dir(requestParams, { depth: null, colors: true })
+        }
+        console.log('\x1B[33m%s\x1B[0m', '✅ 响应数据:')
+        console.dir(builtResponse, { depth: null, colors: true })
+        console.groupEnd()
+        return builtResponse
+      }
+    }
+
+    return null
+  }
+  catch (error) {
+    const errorData = builder(null, `请求处理失败:${error.message}`, 500)
+    console.groupCollapsed(`\x1B[31m 模拟请求错误 \x1B[0m | ${config.method?.toUpperCase()} ${config.url}`)
+    console.log('\x1B[36m%s\x1B[0m', '👉 请求参数:')
+    console.dir(errorData, { depth: null, colors: true })
+    console.log('\x1B[31m%s\x1B[0m', '❌ 错误信息:')
+    console.error(error)
+    console.groupEnd()
+
+    return Promise.resolve(errorData)
+  }
 }
 
-export function addFriend(data: Omit<Clochat.FriendItem, 'friend_id'>) {
-  return friendService.addFriend(data)
-}
+// 本地模式请求处理器
+export function createLocalRequestHandler(config: InternalAxiosRequestConfig): Promise<any> {
+  const { method = 'GET', url = '' } = config
+  const apiKey = `${method.toUpperCase()} ${import.meta.env.VITE_APP_API_BASE_URL}${url}`
 
-export function updateFriend(data: Clochat.FriendItem) {
-  return friendService.updateFriend(data)
-}
+  return Promise.resolve({
+    ...config,
+    adapter: async () => {
+      // 处理API请求并返回结果
+      const response = await handleApiRequest(apiKey, config)
 
-export function deleteFriend(data: { friendId: string }) {
-  return friendService.deleteFriend(data.friendId)
-}
-
-// 聊天相关API
-export function getChats() {
-  return chatService.getAllChats()
-}
-
-export function getChatById(data: { chatId: string }) {
-  return chatService.getChatById(data.chatId)
-}
-
-export function getChatByFriendId(data: { friendId: string }) {
-  return chatService.getChatByFriendId(data.friendId)
-}
-
-export function addChat(data: Clochat.AddChatParams) {
-  return chatService.addChat(data)
-}
-
-export function deleteChat(data: { chatId: string }) {
-  return chatService.deleteChat(data.chatId)
-}
-
-// 聊天记录相关API
-export function getChatRecords(data: { chatId: string }) {
-  return chatRecordService.getChatRecords(data.chatId)
-}
-
-export function addChatRecord(data: Clochat.AddRecordParams) {
-  return chatRecordService.addChatRecord(data)
-}
-
-export function deleteChatRecord(data: { recordId: string }) {
-  return chatRecordService.deleteChatRecord(data.recordId)
-}
-
-export function searchChatRecords(data: { chatId: string, keyword: string }) {
-  return chatRecordService.searchChatRecords(data.chatId, data.keyword)
-}
-
-// API映射表
-export const apiMap: Record<string, any> = {
-  'POST /api/clochat/friends/list': getFriends,
-  'POST /api/clochat/friends/detail': getFriendById,
-  'POST /api/clochat/friends': addFriend,
-  'POST /api/clochat/friends/update': updateFriend,
-  'POST /api/clochat/friends/delete': deleteFriend,
-  'POST /api/clochat/chats/list': getChats,
-  'POST /api/clochat/chats/detail': getChatById,
-  'POST /api/clochat/chats/friend': getChatByFriendId,
-  'POST /api/clochat/chats': addChat,
-  'POST /api/clochat/chats/delete': deleteChat,
-  'POST /api/clochat/chat-records/list': getChatRecords,
-  'POST /api/clochat/chat-records': addChatRecord,
-  'POST /api/clochat/chat-records/delete': deleteChatRecord,
-  'POST /api/clochat/chat-records/search': searchChatRecords,
+      return {
+        data: response,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      }
+    },
+  })
 }

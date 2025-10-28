@@ -7,12 +7,11 @@ import { chatService } from './chat.service'
 export class ChatRecordService {
   // 获取聊天记录
   async getChatRecords(chatId: string): Promise<ChatRecordModel[]> {
-    console.log('getChatRecords', chatId)
     return await db.chatRecords.where('chat_id').equals(chatId).toArray()
   }
 
   // 添加聊天记录
-  async addChatRecord(params: Clochat.AddRecordParams): Promise<ChatRecordModel> {
+  async addChatRecord(params: Api.Clochat.AddRecordParams): Promise<ChatRecordModel> {
     const recordId = uuidv4()
     const now = Date.now()
     const newRecord: ChatRecordModel = {

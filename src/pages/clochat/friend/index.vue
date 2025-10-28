@@ -41,7 +41,6 @@ async function handleSendChat(friend_id: string) {
       })
       chatItem = newChatResponse?.result
     }
-    console.log(chatItem, 'chatItem')
     if (chatItem) {
       router.push({
         path: '/clochat/chat',
