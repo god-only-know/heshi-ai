@@ -1,58 +1,56 @@
 import { chatRecordService, chatService, friendService } from '@/server'
-
 // 好友相关API
 /** 获取好友列表 */
-export function getFriends() {
+function getFriends() {
   return friendService.getAllFriends()
 }
 /** 获取好友详情 */
-export function getFriendDetail(data: { friendId: string }) {
+function getFriendDetail(data: { friendId: string }) {
   return friendService.getFriendById(data.friendId)
 }
 /** 删除好友 */
-export function deleteFriend(data: { friendId: string }) {
+function deleteFriend(data: { friendId: string }) {
   return friendService.deleteFriend(data.friendId)
 }
 
 // 聊天相关API
-
 /** 获取所有聊天 */
-export function getChats(): Promise<Api.Clochat.getChatListResult> {
+function getChats(): Promise<Api.Clochat.getChatListResult> {
   return chatService.getAllChats()
 }
 /** 获取聊天详情 */
-export function getChatDetail(data: Api.Clochat.getChatDetailParams): Promise<Api.Clochat.getChatDetailResult> {
+function getChatDetail(data: Api.Clochat.getChatDetailParams): Promise<Api.Clochat.getChatDetailResult> {
   return chatService.getChatDetail(data.chat_id)
 }
 /** 获取聊天记录 */
-export function getChatByFriendId(data: { friendId: string }) {
+function getChatByFriendId(data: { friendId: string }) {
   return chatService.getChatByFriendId(data.friendId)
 }
 /** 添加聊天 */
-export function addChat(data: Api.Clochat.AddChatParams) {
+function addChat(data: Api.Clochat.AddChatParams) {
   return chatService.addChat(data)
 }
 /** 删除聊天 */
-export function deleteChat(data: { chatId: string }) {
+function deleteChat(data: { chatId: string }) {
   return chatService.deleteChat(data.chatId)
 }
 
 // 聊天记录相关API
 
 /** 获取聊天记录 */
-export function getChatRecords(data: { chatId: string }) {
+function getChatRecords(data: { chatId: string }) {
   return chatRecordService.getChatRecords(data.chatId)
 }
 /** 搜索聊天记录 */
-export function addChatRecord(data: Api.Clochat.AddRecordParams) {
+function addChatRecord(data: Api.Clochat.AddRecordParams) {
   return chatRecordService.addChatRecord(data)
 }
 /** 删除聊天记录 */
-export function deleteChatRecord(data: { recordId: string }) {
+function deleteChatRecord(data: { recordId: string }) {
   return chatRecordService.deleteChatRecord(data.recordId)
 }
 /** 搜索聊天记录 */
-export function searchChatRecords(data: { chatId: string, keyword: string }) {
+function searchChatRecords(data: { chatId: string, keyword: string }) {
   return chatRecordService.searchChatRecords(data.chatId, data.keyword)
 }
 

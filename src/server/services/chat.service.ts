@@ -52,7 +52,7 @@ export class ChatService {
   }
 
   // 添加聊天
-  async addChat(params: Clochat.AddChatParams): Promise<ChatModel> {
+  async addChat(params: Api.Clochat.AddChatParams): Promise<ChatModel> {
     const chatId = uuidv4()
     const now = Date.now()
     const newChat: ChatModel = {

@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-import * as api from '@/api'
-import { useI18n } from 'vue-i18n'
+import api from '@/api/index'
 import moment from 'moment'
 import ChatDetail from './detail.vue'
 
-const { t } = useI18n()
 const route = useRoute()
 // 使用ref存储数据
 const chatList = ref<Clochat.ChatItem []>([])
@@ -21,7 +19,6 @@ async function fetchChatList() {
   }
   catch (err) {
     console.error('获取聊天列表失败', err)
-    showNotify({ type: 'danger', message: t('clochat.notify.fetchChatsFailed') })
   }
   finally {
     loading.value = false

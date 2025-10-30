@@ -1,38 +1,63 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
 import useApiSettingStore from '@/stores/modules/apiSetting'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
+const props = defineProps<{
+  settingList: Api.ApiSetting.GetApiSettingsResult
+}>()
 const apiSettingStore = useApiSettingStore()
-const { settingList, modelForm } = storeToRefs(apiSettingStore)
-const configColumns = ref(settingList.value.map(item => ({ text: item.name, value: item.id })))
+const { modelForm } = storeToRefs(apiSettingStore)
+const configColumns = ref([])
 const pickerValue = ref([])
 const showPicker = ref('')
 const { t } = useI18n()
 
+apiSettingStore.getModelSetting()
 const scenes = ref([
   { key: 'summaryModel', label: t('apiSetting.scenes.summary') },
   { key: 'dynamicModel', label: t('apiSetting.scenes.dynamic') },
 ])
+
+function updateConfigColumns() {
+  configColumns.value = props.settingList.map(item => ({ text: item.setting_name, value: item.setting_id }))
+}
+
 function openSettingList(key: string) {
-  configColumns.value = settingList.value.map(item => ({ text: item.name, value: item.id }))
+  updateConfigColumns()
   showPicker.value = key
 }
+
 function onPickerConfirm({ selectedOptions }) {
   // 支持 Picker 返回对象或字符串
   const value = selectedOptions?.[0]?.value ?? ''
-  const findItem = settingList.value.find(item => item.id === value)
-  modelForm.value[showPicker.value] = findItem?.id
-  console.log(modelForm.value, showPicker.value)
+  const findItem = props.settingList.find(item => item.setting_id === value)
+
+  if (findItem && showPicker.value) {
+    // 根据选择的设置更新 store
+    if (showPicker.value === 'mainChatModel') {
+      apiSettingStore.setMainChatModel(findItem)
+    }
+    else if (showPicker.value === 'summaryModel') {
+      apiSettingStore.setSummaryModel(findItem)
+    }
+    else if (showPicker.value === 'dynamicModel') {
+      apiSettingStore.setDynamicModel(findItem)
+    }
+  }
+
   showPicker.value = ''
 }
 
 function getModelText(key: string) {
-  const modelId = modelForm.value[key]
-  console.log(modelId)
-  const findItem = settingList.value.find(item => item.id === modelId)
+  const modelSetting = modelForm.value[key]
 
-  return findItem?.name || t('apiSetting.configList')
+  return modelSetting?.setting_name || t('apiSetting.configList')
+}
+
+function handleApplyToAllChange(value: boolean) {
+  apiSettingStore.setApplyToAll(value)
 }
 </script>
 
@@ -44,7 +69,7 @@ function getModelText(key: string) {
     </van-cell>
 
     <van-cell class="p-8 px-8">
-      <van-checkbox v-model="modelForm.applyToAll">
+      <van-checkbox v-model="modelForm.applyToAll" @change="handleApplyToAllChange">
         {{ t('apiSetting.applyToAll') }}
       </van-checkbox>
     </van-cell>

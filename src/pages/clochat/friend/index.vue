@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as api from '@/api'
+import api from '@/api/index'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
 
@@ -18,7 +18,6 @@ async function fetchFriendList() {
   }
   catch (err) {
     console.error('获取好友列表失败', err)
-    showNotify({ type: 'danger', message: t('clochat.notify.fetchFriendsFailed') })
   }
   finally {
     loading.value = false

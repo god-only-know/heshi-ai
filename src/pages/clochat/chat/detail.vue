@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import * as api from '@/api'
+import api from '@/api/index'
 import { useI18n } from 'vue-i18n'
 
 // 定义组件属性

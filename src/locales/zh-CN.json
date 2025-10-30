@@ -4,6 +4,7 @@
     "description": "一个基于 Vue 3 生态系统的移动 web 应用模板"
   },
   "navbar": {
+    "404": "404 页面",
     "Home": "主页",
     "Mock": "Mock",
     "Charts": "图表",
@@ -15,7 +16,6 @@
     "Register": "注册",
     "ForgotPassword": "忘记密码",
     "Settings": "设置",
-    "404": "404 页面",
     "Undefined": "未定义标题",
     "ApiSetting": "API管理",
     "Clochat": "Clochat"
@@ -152,7 +152,8 @@
       "my": "我的"
     },
     "notify": {
-      "noChat": "无对话"
+      "noChat": "无对话",
+      "createChatFailed": "创建聊天失败"
     }
   }
 }

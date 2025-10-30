@@ -1,53 +1,71 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { showConfirmDialog, showFailToast, showSuccessToast, showToast } from 'vant'
-import { getModelList } from '@/api/apiSetting'
-import useApiSettingStore from '@/stores/modules/apiSetting'
-import { storeToRefs } from 'pinia'
+import api from '@/api/index'
 import { v4 } from 'uuid'
 
-const apiSettingStore = useApiSettingStore()
-const { settingList,
-} = storeToRefs(apiSettingStore)
 const { t } = useI18n()
 
-const modleList = ref([])
+const settingList = ref<Api.ApiSetting.GetApiSettingsResult>([])
+const modleList = ref<Api.LLMMoel.GetModelListResult>([])
 const showPicker = ref('')
 const pickerValue = ref([])
 const formRef = ref(null)
 
 const configColumns = ref([])
 const defaultApi = {
-  id: '',
-  name: '',
-  apiUrl: '',
-  apiKey: '',
+  setting_id: '',
+  setting_name: '',
+  api_url: '',
+  api_key: '',
   model: '',
 }
-const apiForm = ref(settingList.value.length > 0 ? { ...settingList.value[0] } : { ...defaultApi, id: v4() })
+const apiForm = ref<Api.ApiSetting.UpdateApiSettingParams>({ ...defaultApi, setting_id: v4() })
+
+// 获取API设置列表
+async function fetchApiSettings() {
+  try {
+    const res = await api.getApiSettings()
+    if (res?.result) {
+      settingList.value = res.result
+      if (settingList.value.length > 0) {
+        apiForm.value = { ...settingList.value[0] }
+      }
+    }
+  }
+  catch (error) {
+    console.error('获取API设置列表失败:', error)
+  }
+}
+
+onMounted(() => {
+  fetchApiSettings()
+})
 
 function handleClickApiName() {
-  configColumns.value = settingList.value.map(item => ({ text: item.name, value: item.id }))
+  configColumns.value = settingList.value.map(item => ({ text: item.setting_name, value: item.setting_id }))
   showPicker.value = 'api'
-  pickerValue.value = [apiForm.value.id]
+  pickerValue.value = [apiForm.value.setting_id]
 }
+
 function handleClickModelList() {
   if (modleList.value.length === 0) {
     showToast(t('apiSetting.noModels'))
     return
   }
-  configColumns.value = modleList.value.map(c => ({ text: c.id, value: c.id }))
+  configColumns.value = modleList.value.map(c => ({ text: c.model_id, value: c.model_name }))
   showPicker.value = 'model'
   pickerValue.value = [apiForm.value.model]
 }
+
 function onPickerConfirm({ selectedOptions }) {
   // 支持 Picker 返回对象或字符串
   const value = selectedOptions?.[0]?.value ?? ''
   if (showPicker.value === 'api') {
-    const findItem = settingList.value.find(item => item.id === value)
-    apiForm.value = {
-      ...findItem,
+    const findItem = settingList.value.find(item => item.setting_id === value)
+    if (findItem) {
+      apiForm.value = { ...findItem }
     }
   }
   if (showPicker.value === 'model') {
@@ -59,20 +77,27 @@ function onPickerConfirm({ selectedOptions }) {
 async function addSetting() {
   try {
     await formRef.value.validate()
-    apiForm.value.id = v4()
-    apiSettingStore.addApiSetting(apiForm.value)
-    showSuccessToast(t('apiSetting.saveSuccess'))
+    apiForm.value.setting_id = v4()
+    const { setting_id, ...rest } = apiForm.value
+    const res = await api.addApiSetting(rest)
+    if (res?.result) {
+      await fetchApiSettings()
+      showSuccessToast(t('apiSetting.saveSuccess'))
+    }
   }
   catch (err) {
     showFailToast(err?.[0]?.message)
   }
 }
+
 async function saveSetting() {
   try {
     await formRef.value.validate()
-
-    apiSettingStore.updateApiSetting(apiForm.value)
-    showSuccessToast(t('apiSetting.saveSuccess'))
+    const res = await api.updateApiSetting(apiForm.value)
+    if (res?.result) {
+      await fetchApiSettings()
+      showSuccessToast(t('apiSetting.saveSuccess'))
+    }
   }
   catch (err) {
     showFailToast(err?.[0]?.message)
@@ -82,11 +107,10 @@ async function saveSetting() {
 function deleteSetting() {
   showConfirmDialog({
     title: t('apiSetting.deleteConfirm'),
-
-  }).then(() => {
-    // apiSettingStore.deleteApiSetting(apiForm.value.id)
-    showFailToast(t('apiSetting.deleteSuccess'))
-    // apiForm.value =  settingList.value.length>0 ? {...settingList.value[0]} : { ...defaultApi,id:v4() }
+  }).then(async () => {
+    await api.deleteApiSetting(apiForm.value.setting_id)
+    await fetchApiSettings()
+    showSuccessToast(t('apiSetting.deleteSuccess'))
   }).catch(() => {
     // 取消
   })
@@ -97,13 +121,12 @@ function testModels() {
 }
 
 async function connectApi() {
-  const res = await getModelList({
-    apiKey: apiForm.value.apiKey,
-    url: apiForm.value.apiUrl,
+  const res = await api.getModelList({
+    api_key: apiForm.value.api_key,
+    url: apiForm.value.api_url,
   })
-  console.log(res)
-  if (res?.data) {
-    modleList.value = res.data || []
+  if (res?.result) {
+    modleList.value = res.result || []
     showSuccessToast(t('apiSetting.connectSuccess'))
   }
 }
@@ -115,7 +138,7 @@ async function connectApi() {
       <!-- 配置选择 + 保存/删除 -->
       <div class="flex gap-3 items-center justify-between">
         <van-field
-          v-model="apiForm.name" right-icon="arrow-down" :placeholder="t('apiSetting.selectSetting')"
+          v-model="apiForm.setting_name" right-icon="arrow-down" :placeholder="t('apiSetting.selectSetting')"
           class="flex-1" :rules="[{ required: true, message: t('apiSetting.selectSetting') }]"
           @click-right-icon="handleClickApiName"
         />
@@ -134,11 +157,11 @@ async function connectApi() {
 
       <!-- 自定义 URL / 密钥 -->
       <van-field
-        v-model="apiForm.apiUrl" :placeholder="t('apiSetting.apiUrl')"
+        v-model="apiForm.api_url" :placeholder="t('apiSetting.apiUrl')"
         :rules="[{ required: true, message: t('apiSetting.apiUrl') }]"
       />
       <van-field
-        v-model="apiForm.apiKey" :placeholder="t('apiSetting.apiKey')" type="password"
+        v-model="apiForm.api_key" :placeholder="t('apiSetting.apiKey')" type="password"
         :rules="[{ required: true, message: t('apiSetting.apiKey') }]"
       />
 
@@ -156,7 +179,7 @@ async function connectApi() {
         </van-button>
       </div>
     </van-form>
-    <ApiSettingChatModel />
+    <ApiSettingChatModel :setting-list="settingList" />
 
     <!-- Picker 弹窗 -->
     <van-popup :show="!!showPicker" position="bottom">

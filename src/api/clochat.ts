@@ -22,6 +22,10 @@ export function deleteFriend(friendId: string) {
 }
 
 // 聊天相关API
+export function sendMessage() {
+  return request.post('/clochat/send-message')
+}
+// 聊天相关API
 export function getChats() {
   return request.post('/clochat/chats/list')
 }

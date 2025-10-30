@@ -13,7 +13,8 @@
     "types": [
       "node",
       "vite-plugin-pwa/client",
-      "@intlify/unplugin-vue-i18n/messages"
+      "@intlify/unplugin-vue-i18n/messages",
+      "moment"
     ],
     "allowJs": true,
     "strictNullChecks": false,

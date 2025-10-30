@@ -5,6 +5,8 @@ import type { ChatModel } from './models/chat.model'
 import { chatTableSchema, initialChats } from './models/chat.model'
 import type { ChatRecordModel } from './models/chat-record.model'
 import { chatRecordTableSchema, initialChatRecords } from './models/chat-record.model'
+import type { ApiSettingModel, ModelSettingModel } from './models/api-setting.model'
+import { apiSettingTableSchema, initialApiSettings, initialModelSettings, modelSettingTableSchema } from './models/api-setting.model'
 
 // 定义数据库类，继承自Dexie
 export class AppDatabase extends Dexie {
@@ -12,6 +14,8 @@ export class AppDatabase extends Dexie {
   friends!: Dexie.Table<FriendModel, string>
   chats!: Dexie.Table<ChatModel, string>
   chatRecords!: Dexie.Table<ChatRecordModel, string>
+  apiSettings!: Dexie.Table<ApiSettingModel, string>
+  modelSettings!: Dexie.Table<ModelSettingModel, string>
 
   constructor() {
     super('AppDatabase')
@@ -21,6 +25,8 @@ export class AppDatabase extends Dexie {
       friends: friendTableSchema,
       chats: chatTableSchema,
       chatRecords: chatRecordTableSchema,
+      apiSettings: apiSettingTableSchema,
+      modelSettings: modelSettingTableSchema,
     })
   }
 }
@@ -38,6 +44,14 @@ export async function initDatabase() {
       await db.friends.bulkAdd(initialFriends)
       await db.chats.bulkAdd(initialChats)
       await db.chatRecords.bulkAdd(initialChatRecords)
+    }
+
+    // 检查apiSettings表是否为空
+    const apiSettingCount = await db.apiSettings.count()
+    if (apiSettingCount === 0) {
+      // 添加初始数据
+      await db.apiSettings.bulkAdd(initialApiSettings)
+      await db.modelSettings.bulkAdd(initialModelSettings)
     }
 
     console.log('数据库初始化成功')

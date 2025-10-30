@@ -1,15 +1,17 @@
 import clochatApis from './clochat'
+import apiSettingApis from './api-setting'
+import llmModel from './llm-model'
 import type { InternalAxiosRequestConfig } from 'axios'
 import { isEmpty } from 'lodash-es'
 
 // 构建请求处理函数
-const apiMap = clochatApis.reduce((acc, api) => {
+const apiMap = [...clochatApis, ...apiSettingApis, ...llmModel].reduce((acc, api) => {
   const key = `${api.method} ${api.path}`
   acc[key] = api.handler
   return acc
 }, {})
 // 构建响应数据
-export function builder(data: unknown, message = 'success', code = 0) {
+function builder(data: unknown, message = 'success', code = 0) {
   // 响应体结构
   const responseBody = {
     message: '',
@@ -28,8 +30,12 @@ export function builder(data: unknown, message = 'success', code = 0) {
   return responseBody
 }
 
+function hasApiReuest(apiKey) {
+  return !!apiMap[apiKey]
+}
 // 处理API请求并返回结果
-export async function handleApiRequest(apiKey: string, config: InternalAxiosRequestConfig) {
+
+async function handleApiRequest(apiKey: string, config: InternalAxiosRequestConfig) {
   try {
     // 精确匹配
     if (apiMap[apiKey]) {
@@ -49,56 +55,8 @@ export async function handleApiRequest(apiKey: string, config: InternalAxiosRequ
 
       return builtResponse
     }
-
-    // 处理带参数的路径
-    const [method, path] = apiKey.split(' ')
-    const pathSegments = path.split('/')
-
-    for (const key in apiMap) {
-      const [apiMethod, apiPath] = key.split(' ')
-      if (apiMethod !== method)
-        continue
-
-      const apiPathSegments = apiPath.split('/')
-      if (apiPathSegments.length !== pathSegments.length)
-        continue
-
-      let match = true
-      const params: Record<string, string> = {}
-
-      for (let i = 0; i < apiPathSegments.length; i++) {
-        const apiSegment = apiPathSegments[i]
-        const pathSegment = pathSegments[i]
-
-        if (apiSegment.startsWith(':')) {
-          // 参数匹配
-          const paramName = apiSegment.substring(1)
-          params[paramName] = pathSegment
-        }
-        else if (apiSegment !== pathSegment) {
-          match = false
-          break
-        }
-      }
-
-      if (match) {
-        const requestParams = { ...config.params, ...params }
-        if (config.data) {
-          requestParams.body = config.data
-        }
-        const response = await apiMap[key](requestParams)
-        const builtResponse = builder(response)
-
-        console.groupCollapsed(`\x1B[34m 模拟请求 \x1B[0m | ${config.method?.toUpperCase()} ${config.url}`)
-        if (requestParams && !isEmpty(requestParams)) {
-          console.log('\x1B[36m%s\x1B[0m', '👉 请求参数:')
-          console.dir(requestParams, { depth: null, colors: true })
-        }
-        console.log('\x1B[33m%s\x1B[0m', '✅ 响应数据:')
-        console.dir(builtResponse, { depth: null, colors: true })
-        console.groupEnd()
-        return builtResponse
-      }
+    else {
+      return false
     }
 
     return null
@@ -121,19 +79,22 @@ export function createLocalRequestHandler(config: InternalAxiosRequestConfig): P
   const { method = 'GET', url = '' } = config
   const apiKey = `${method.toUpperCase()} ${import.meta.env.VITE_APP_API_BASE_URL}${url}`
 
-  return Promise.resolve({
-    ...config,
-    adapter: async () => {
-      // 处理API请求并返回结果
-      const response = await handleApiRequest(apiKey, config)
+  if (hasApiReuest(apiKey)) {
+    return Promise.resolve({
+      ...config,
+      adapter: async () => {
+        // 处理API请求并返回结果
+        const response = await handleApiRequest(apiKey, config)
 
-      return {
-        data: response,
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config,
-      }
-    },
-  })
+        return {
+          data: response,
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+          config,
+        }
+      },
+    })
+  }
+  return Promise.resolve(config)
 }
