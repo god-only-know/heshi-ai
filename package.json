@@ -18,7 +18,8 @@
     "release": "bumpp --commit --push --tag",
     "typecheck": "vue-tsc --noEmit",
     "commitlint": "commitlint --edit",
-    "prepare": "simple-git-hooks"
+    "prepare": "simple-git-hooks",
+    "deploy": "pnpm run build:pro && gh-pages -d dist"
   },
   "dependencies": {
     "@unhead/vue": "2.0.19",
