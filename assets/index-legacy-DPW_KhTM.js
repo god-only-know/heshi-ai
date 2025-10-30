@@ -1,0 +1,1 @@
+System.register(["./index-legacy-DLLPm1HD.js"],function(e,t){"use strict";var n,i,s;return{setters:[e=>{n=e.d,i=e.R,s=e.S}],execute:function(){e("default",n({__name:"index",setup:e=>(console.log("activity"),(e,t)=>(s(),i("div",null," chat ")))}))}}});
