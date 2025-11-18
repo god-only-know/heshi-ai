@@ -10,14 +10,14 @@ const router = useRouter()
 const { t } = useI18n()
 
 const routes = [
-  { name: 'Charts', path: '/charts' },
-  { name: 'Counter', path: '/counter' },
-  { name: 'ForgotPassword', path: '/forgot-password' },
-  { name: 'Mock', path: '/mock' },
-  { name: 'Register', path: '/register' },
-  { name: 'ScrollCache', path: '/scroll-cache' },
-  { name: 'Settings', path: '/settings' },
-  { name: 'UnoCSS', path: '/unocss' },
+  // { name: 'Charts', path: '/charts' },
+  // { name: 'Counter', path: '/counter' },
+  // { name: 'ForgotPassword', path: '/forgot-password' },
+  // { name: 'Mock', path: '/mock' },
+  // { name: 'Register', path: '/register' },
+  // { name: 'ScrollCache', path: '/scroll-cache' },
+  // { name: 'Settings', path: '/settings' },
+  // { name: 'UnoCSS', path: '/unocss' },
   { name: 'Clochat', path: '/clochat' },
 ]
 

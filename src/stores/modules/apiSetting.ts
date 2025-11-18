@@ -40,7 +40,9 @@ const useApiSettingStore = defineStore('apiSetting', () => {
       console.error('更新模型设置失败:', error)
     }
   }
-
+  function getMainChatModelId() {
+    return modelForm.value.mainChatModel?.setting_id || ''
+  }
   // 设置主聊天模型
   function setMainChatModel(setting: ApiSetting.SettingItem | null) {
     modelForm.value.mainChatModel = setting
@@ -75,6 +77,7 @@ const useApiSettingStore = defineStore('apiSetting', () => {
 
   return {
     modelForm,
+    getMainChatModelId,
     getModelSetting,
     updateModelSetting,
     setMainChatModel,

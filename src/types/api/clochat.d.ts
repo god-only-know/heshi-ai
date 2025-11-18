@@ -18,8 +18,8 @@ declare namespace Api {
       friend_introduce?: string
       record_list: {
         chat_record_id: string
-        create_time: number
-        chat_id: string
+        create_time?: number
+        chat_id?: string
         content: string
         type: string
       }[]
@@ -47,6 +47,12 @@ declare namespace Api {
     interface AddChatParams {
       friend_id: string
       last_message?: string
+    }
+    // 发起对话参数
+    interface SendMessageParams {
+      setting_id: string
+      chat_id: string
+      user_message: string
     }
   }
 }

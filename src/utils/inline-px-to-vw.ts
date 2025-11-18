@@ -11,7 +11,7 @@ import { round } from 'lodash-es'
 const idealWidth = 375
 
 // 表示伸缩视图的最大宽度
-const maxWidth = 600
+const maxWidth = 750
 
 /**
  * 限制大小的 vw 转换

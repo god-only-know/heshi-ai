@@ -22,8 +22,8 @@ export function deleteFriend(friendId: string) {
 }
 
 // 聊天相关API
-export function sendMessage() {
-  return request.post('/clochat/send-message')
+export function sendMessage(data: Api.Clochat.SendMessageParams) {
+  return request.post('/llm-model/send-message', data)
 }
 // 聊天相关API
 export function getChats() {
@@ -51,12 +51,27 @@ export function getChatRecords(chatId: string) {
   return request.post('/clochat/chat-records/list', { chatId })
 }
 
+// 分页获取聊天记录，同时返回总数和是否有更多
+export interface ChatRecordsPaginatedParams {
+  chatId: string
+  page?: number
+  pageSize?: number
+}
+
+export function getChatRecordsPaginated(params: ChatRecordsPaginatedParams) {
+  return request.post('/clochat/chat-records/paginated', params)
+}
+
 export function addChatRecord(data: Api.Clochat.AddRecordParams) {
   return request.post('/clochat/chat-records', data)
 }
 
 export function deleteChatRecord(recordId: string) {
   return request.post('/clochat/chat-records/delete', { recordId })
+}
+
+export function clearChatHistory(chatId: string) {
+  return request.post('/clochat/chat-records/clear', { chatId })
 }
 
 export function searchChatRecords(chatId: string, keyword: string) {

@@ -19,7 +19,7 @@ export default {
     'postcss-mobile-forever': {
       appSelector: '#app',
       viewportWidth: 375,
-      maxDisplayWidth: 600,
+      maxDisplayWidth: 750,
       border: true,
       rootContainingBlockSelectorList,
     },

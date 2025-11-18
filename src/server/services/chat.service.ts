@@ -7,7 +7,9 @@ import type { FriendModel } from '../models/friend.model'
 export class ChatService {
   // 获取所有聊天
   async getAllChats(): Promise<Api.Clochat.getChatListResult> {
-    const chats = await db.chats.toArray()
+    const chats = (await db.chats.toArray()).toSorted(
+      (a, b) => b.last_message_time - a.last_message_time,
+    )
     const friends = await db.friends.where('friend_id').anyOf(chats.map(i => i.friend_id)).toArray()
     return chats.map((i) => {
       return {
@@ -34,10 +36,12 @@ export class ChatService {
       friendData = await db.friends.get(chatData.friend_id)
     }
 
-    const chatRecords = await db.chatRecords
+    const chatRecords = (await db.chatRecords
       .where('chat_id')
       .equals(chatId)
-      .toArray()
+      .toArray()).toSorted(
+      (a, b) => a.create_time - b.create_time,
+    )
 
     return {
       ...chatData,

@@ -116,8 +116,26 @@ function deleteSetting() {
   })
 }
 
-function testModels() {
+async function testModels() {
   showToast(t('apiSetting.testing'))
+
+  const res = await api.testModelConnect({
+    api_key: apiForm.value.api_key,
+    url: apiForm.value.api_url,
+    model: apiForm.value.model,
+    messages: [
+      {
+        role: 'user',
+        content: 'hello',
+      },
+    ],
+  })
+  if (res?.result?.choices?.[0]?.message) {
+    showSuccessToast(t('apiSetting.testSuccess'))
+  }
+  else {
+    showFailToast(res?.message)
+  }
 }
 
 async function connectApi() {
@@ -128,6 +146,9 @@ async function connectApi() {
   if (res?.result) {
     modleList.value = res.result || []
     showSuccessToast(t('apiSetting.connectSuccess'))
+  }
+  else {
+    showFailToast(res?.message)
   }
 }
 </script>

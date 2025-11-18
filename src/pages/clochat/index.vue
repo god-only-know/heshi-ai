@@ -24,12 +24,11 @@ const tabs = [
     icon: 'i-carbon:user',
   },
 ]
-console.log(2)
 </script>
 
 <template>
-  <div class="flex flex-col h-[100vh]">
-    <div class="flex-1">
+  <div class="pb-[50px] flex flex-col h-[100vh] overflow-auto">
+    <div class="flex-grow h-full">
       <router-view v-slot="{ Component, route }">
         <keep-alive>
           <component

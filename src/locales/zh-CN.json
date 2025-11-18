@@ -137,6 +137,7 @@
     "deleteSuccess": "已删除配置",
     "deleteConfirm": "确认删除该配置？",
     "testing": "正在测试模型……",
+    "testSuccess": "测试成功",
     "connectSuccess": "连接成功",
     "noModels": "没有模型",
     "scenes": {
@@ -153,7 +154,41 @@
     },
     "notify": {
       "noChat": "无对话",
-      "createChatFailed": "创建聊天失败"
+      "createChatFailed": "创建聊天失败",
+      "sendMessageFailed": "发送消息失败"
+    },
+    "chat": {
+      "inputPlaceholder": "输入消息...",
+      "loadMore": "加载更多历史记录"
+    },
+    "settings": {
+      "title": "聊天设置",
+      "viewHistory": "查看聊天历史",
+      "bindWorldBook": "绑定世界书",
+      "block": "拉黑",
+      "blockConfirm": "确认拉黑",
+      "blockConfirmMessage": "确定要拉黑 {name} 吗？",
+      "blockSuccess": "拉黑成功",
+      "operationFailed": "操作失败",
+      "cancel": "取消",
+      "noIntroduce": "暂无介绍",
+      "clearHistory": "清空聊天历史",
+      "clearHistoryConfirm": "确认清空",
+      "clearHistoryConfirmMessage": "确定要清空与 {name} 的聊天历史吗？",
+      "clearHistorySuccess": "清空成功",
+      "importChat": "导入聊天",
+      "exportChat": "导出聊天",
+      "worldBooks": "世界书列表",
+      "noWorldBooks": "暂无世界书",
+      "selectWorldBooks": "请选择世界书",
+      "chatHistory": "聊天历史",
+      "back": "返回",
+      "search": "搜索",
+      "searchPlaceholder": "请输入搜索关键词",
+      "noSearchResults": "没有找到匹配的聊天记录",
+      "noHistory": "暂无聊天记录",
+      "user": "我",
+      "assistant": "AI"
     }
   }
 }

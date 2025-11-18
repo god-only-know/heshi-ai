@@ -10,12 +10,19 @@ declare namespace Api {
       model_id: string
     }[]
 
-    interface SendMessageParams {
-      setting_id: string
-      messages: {
+    interface SendTestMessageParams {
+      url: string
+      api_key: string
+      model: string
+      messages?: {
         role: 'system' | 'user' | 'assistant'
         content: string
       }[]
+    }
+    interface SendMessageParams {
+      setting_id: string
+      chat_id: string
+      user_message: string
     }
     interface SendMessageResult {
       message: string

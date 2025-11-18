@@ -6,8 +6,8 @@ export function getModelList(data: Api.LLMMoel.GetModelListParams) {
 }
 
 // 发送连接信息
-export function testModelConnect(data: Api.LLMMoel.SendMessageParams) {
-  return request.post<Api.LLMMoel.SendMessageResult>('/llm-model/send-message', data)
+export function testModelConnect(data: Api.LLMMoel.SendTestMessageParams) {
+  return request.post<Api.LLMMoel.SendMessageResult>('/llm-model/send-test-message', data)
 }
 
 // API设置相关API

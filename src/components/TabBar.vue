@@ -9,7 +9,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <van-tabbar route placeholder>
+  <van-tabbar route fixed>
     <van-tabbar-item v-for="item in props.tabs" :key="item.path" replace :to="item.path" :name="item.path">
       {{ item.name }}
       <template #icon>

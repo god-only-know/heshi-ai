@@ -25,6 +25,15 @@ const routers: RouteRecordRaw[] = [
         component: () => import('@/pages/clochat/chat/index.vue'),
       },
       {
+        path: '/clochat/chat/:id',
+        name: 'chatDetail',
+        meta: {
+          title: '',
+          keepAlive: true,
+        },
+        component: () => import('@/pages/clochat/chat/detail.vue'),
+      },
+      {
         path: '/clochat/friend',
         name: 'friend',
         meta: {

@@ -13,7 +13,6 @@ function login() {
 
   router.push({ name: 'Login', query: { redirect: 'Profile' } })
 }
-console.log('my')
 </script>
 
 <template>

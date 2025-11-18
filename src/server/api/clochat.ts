@@ -41,6 +41,15 @@ function deleteChat(data: { chatId: string }) {
 function getChatRecords(data: { chatId: string }) {
   return chatRecordService.getChatRecords(data.chatId)
 }
+
+/** 分页获取聊天记录，同时返回总数和是否有更多 */
+function getChatRecordsPaginated(data: {
+  chatId: string
+  page?: number
+  pageSize?: number
+}) {
+  return chatRecordService.getChatRecordsPaginated(data)
+}
 /** 搜索聊天记录 */
 function addChatRecord(data: Api.Clochat.AddRecordParams) {
   return chatRecordService.addChatRecord(data)
@@ -48,6 +57,10 @@ function addChatRecord(data: Api.Clochat.AddRecordParams) {
 /** 删除聊天记录 */
 function deleteChatRecord(data: { recordId: string }) {
   return chatRecordService.deleteChatRecord(data.recordId)
+}
+/** 清空聊天历史 */
+function clearChatHistory(data: { chatId: string }) {
+  return chatRecordService.clearChatHistory(data.chatId)
 }
 /** 搜索聊天记录 */
 function searchChatRecords(data: { chatId: string, keyword: string }) {
@@ -69,8 +82,18 @@ export default [
   },
   {
     method: 'POST',
+    path: '/api/clochat/chat-records/clear',
+    handler: clearChatHistory,
+  },
+  {
+    method: 'POST',
     path: '/api/clochat/chat-records/list',
     handler: getChatRecords,
+  },
+  {
+    method: 'POST',
+    path: '/api/clochat/chat-records/paginated',
+    handler: getChatRecordsPaginated,
   },
 
   // 好友相关

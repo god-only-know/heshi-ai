@@ -3,11 +3,61 @@ import { db } from '../db'
 import type { ChatRecordModel } from '../models/chat-record.model'
 import { chatService } from './chat.service'
 
+// 默认每页记录数
+const PAGE_SIZE = 20
+
+// 分页结果接口
+export interface PaginatedResult<T> {
+  records: T[]
+  total: number
+  page: number
+  pageSize: number
+  hasMore: boolean
+}
+
 // 聊天记录服务类
 export class ChatRecordService {
   // 获取聊天记录
   async getChatRecords(chatId: string): Promise<ChatRecordModel[]> {
-    return await db.chatRecords.where('chat_id').equals(chatId).toArray()
+    return (await db.chatRecords.where('chat_id').equals(chatId).toArray()).toSorted(
+      (a, b) => a.create_time - b.create_time,
+    )
+  }
+
+  // 分页获取聊天记录，同时返回总数和是否有更多
+  async getChatRecordsPaginated(params: {
+    chatId: string
+    page?: number
+    pageSize?: number
+  }): Promise<PaginatedResult<ChatRecordModel>> {
+    const { chatId, page = 1, pageSize = PAGE_SIZE } = params
+    const offset = (page - 1) * pageSize
+
+    // 基础查询
+    const query = db.chatRecords.where('chat_id').equals(chatId)
+
+    // 获取所有记录
+    const allRecords = await query.toArray()
+
+    // 获取总数
+    const total = allRecords.length
+
+    // 按时间降序排序
+    const sortedRecords = allRecords.toSorted((a, b) => b.create_time - a.create_time)
+
+    // 分页
+    const paginatedRecords = sortedRecords.slice(offset, offset + pageSize)
+
+    // 返回时按时间升序排列
+    const records = paginatedRecords.toSorted((a, b) => a.create_time - b.create_time)
+
+    return {
+      records,
+      total,
+      page,
+      pageSize,
+      hasMore: total > offset + records.length,
+    }
   }
 
   // 添加聊天记录
@@ -32,6 +82,13 @@ export class ChatRecordService {
   // 删除聊天记录
   async deleteChatRecord(recordId: string): Promise<void> {
     await db.chatRecords.delete(recordId)
+  }
+
+  // 清空聊天历史
+  async clearChatHistory(chatId: string): Promise<void> {
+    await db.chatRecords.where('chat_id').equals(chatId).delete()
+    // 更新聊天的最后消息为空
+    await chatService.updateChatLastMessage(chatId, '')
   }
 
   // 根据关键词搜索聊天记录

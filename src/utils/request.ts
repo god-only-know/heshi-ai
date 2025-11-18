@@ -25,7 +25,7 @@ const useLocalMode = true // 可以通过环境变量或配置文件控制
 const request = axios.create({
   // API 请求的默认前缀
   baseURL: import.meta.env.VITE_APP_API_BASE_URL,
-  timeout: 6000, // 请求超时时间
+  timeout: 60000, // 请求超时时间
 })
 
 export type RequestError = AxiosError<{
