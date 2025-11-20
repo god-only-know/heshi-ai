@@ -1,0 +1,1 @@
+System.register(["./index-legacy-DtwDwn7W.js"],function(e,t){"use strict";var n,r,u;return{setters:[e=>{n=e._,r=e.q,u=e.s}],execute:function(){e("default",n({},[["render",function(e,t){return u(),r("div",null," chat ")}]]))}}});
