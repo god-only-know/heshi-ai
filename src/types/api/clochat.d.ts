@@ -22,6 +22,7 @@ declare namespace Api {
         chat_id?: string
         content: string
         type: string
+        is_read?: boolean
       }[]
     }
 
@@ -41,6 +42,7 @@ declare namespace Api {
       chat_id: string
       content: string
       type: 'user' | 'assistant'
+      is_read?: boolean
     }
 
     // 添加对话参数
@@ -53,6 +55,12 @@ declare namespace Api {
       setting_id: string
       chat_id: string
       user_message: string
+      message_ids?: string[]
+    }
+
+    // 标记消息为已读参数
+    interface MarkMessagesAsReadParams {
+      message_ids: string[]
     }
   }
 }

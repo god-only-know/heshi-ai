@@ -5,10 +5,11 @@ export interface ChatRecordModel {
   chat_id: string
   content: string
   type: string
+  is_read: boolean
 }
 
 // 定义表结构
-export const chatRecordTableSchema = 'chat_record_id, create_time, chat_id, content, type'
+export const chatRecordTableSchema = 'chat_record_id, create_time, chat_id, content, type, is_read'
 
 // 初始数据
 export const initialChatRecords: ChatRecordModel[] = [
@@ -18,5 +19,6 @@ export const initialChatRecords: ChatRecordModel[] = [
     chat_id: '1',
     type: 'user',
     content: '你好，小鸡',
+    is_read: true,
   },
 ]

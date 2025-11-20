@@ -37,6 +37,10 @@ const title = computed(() => {
     :title="title" :left-arrow="props.leftArrow" placeholder clickable
     @click-left="onBack"
   >
+    <template v-if="props.leftArrow" #left>
+      <slot name="left" />
+      <van-icon name="arrow-left" color="#ABB0BF" />
+    </template>
     <template #right>
       <slot name="right" />
     </template>

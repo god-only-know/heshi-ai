@@ -23,6 +23,7 @@ declare namespace Api {
       setting_id: string
       chat_id: string
       user_message: string
+      message_ids?: string[]
     }
     interface SendMessageResult {
       message: string

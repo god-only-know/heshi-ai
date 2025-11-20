@@ -37,6 +37,16 @@ function deleteChat(data: { chatId: string }) {
 
 // 聊天记录相关API
 
+/** 标记消息为已读 */
+function markMessagesAsRead(data: Api.Clochat.MarkMessagesAsReadParams) {
+  return chatRecordService.markMessagesAsRead(data.message_ids)
+}
+
+/** 获取未读消息 */
+function getUnreadMessages(data: { chatId: string }) {
+  return chatRecordService.getUnreadMessages(data.chatId)
+}
+
 /** 获取聊天记录 */
 function getChatRecords(data: { chatId: string }) {
   return chatRecordService.getChatRecords(data.chatId)
@@ -70,6 +80,16 @@ function searchChatRecords(data: { chatId: string, keyword: string }) {
 // API映射表
 export default [
   // 聊天记录相关
+  {
+    method: 'POST',
+    path: '/api/clochat/chat-records/mark-as-read',
+    handler: markMessagesAsRead,
+  },
+  {
+    method: 'POST',
+    path: '/api/clochat/chat-records/unread',
+    handler: getUnreadMessages,
+  },
   {
     method: 'POST',
     path: '/api/clochat/chat-records',

@@ -17,6 +17,22 @@ export interface PaginatedResult<T> {
 
 // 聊天记录服务类
 export class ChatRecordService {
+  // 将未读消息标记为已读
+  async markMessagesAsRead(messageIds: string[]): Promise<void> {
+    for (const id of messageIds) {
+      await db.chatRecords.update(id, { is_read: true })
+    }
+  }
+
+  // 获取未读消息
+  async getUnreadMessages(chatId: string): Promise<ChatRecordModel[]> {
+    return await db.chatRecords
+      .where('chat_id')
+      .equals(chatId)
+      .and(record => record.is_read === false)
+      .toArray()
+  }
+
   // 获取聊天记录
   async getChatRecords(chatId: string): Promise<ChatRecordModel[]> {
     return (await db.chatRecords.where('chat_id').equals(chatId).toArray()).toSorted(
@@ -70,6 +86,7 @@ export class ChatRecordService {
       chat_id: params.chat_id,
       content: params.content,
       type: params.type,
+      is_read: params.is_read !== undefined ? params.is_read : true,
     }
     await db.chatRecords.add(newRecord)
 

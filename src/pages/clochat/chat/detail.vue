@@ -2,10 +2,10 @@
 import api from '@/api/index'
 import { useI18n } from 'vue-i18n'
 import useApiSettingStore from '@/stores/modules/apiSetting'
-import { v4 } from 'uuid'
 import ChatSettings from '@/components/ChatSettings/index.vue'
-import { getChatRecordsPaginated } from '@/api/clochat'
+import { addChatRecord, getChatRecordsPaginated } from '@/api/clochat'
 import type { ChatRecordsPaginatedParams } from '@/api/clochat'
+import moment from 'moment'
 
 const route = useRoute()
 const router = useRouter()
@@ -27,6 +27,11 @@ const setting_id = ref('')
 const historyListRef = ref<HTMLElement | null>(null)
 const showSettings = ref(false)
 
+// 缓冲区相关
+const bufferMessageIds = ref<string[]>([])
+const typingTimer = ref<number | null>(null)
+const TYPING_DELAY = 2000 // 用户停止输入2秒后发送消息
+
 // 分页加载相关
 const chatRecordsParams = ref<ChatRecordsPaginatedParams>({
   chatId: '',
@@ -36,10 +41,9 @@ const chatRecordsParams = ref<ChatRecordsPaginatedParams>({
 const isLoadingMore = ref(false)
 const hasMoreHistory = ref(false)
 const isFirstLoad = ref(true)
-
+const chatId = route.params.id as string
 // 获取聊天详情
 async function fetchChatDetail() {
-  const chatId = route.params.id as string
   if (!chatId) {
     return showNotify({ type: 'danger', message: t('clochat.notify.noChat') })
   }
@@ -132,27 +136,75 @@ async function getModelId() {
   setting_id.value = apiSettingStore?.getMainChatModelId()
 }
 
-async function handleSendMessage() {
-  if (!chatDetail.value?.chat_id || loading.value)
+// 添加消息到缓冲区
+async function addMessageToBuffer() {
+  if (loading.value) {
+    showNotify({ type: 'danger', message: t('clochat.notify.sending') })
+    return
+  }
+
+  const user_message = inputText.value.trim()
+  if (user_message === '') {
+    showNotify({ type: 'danger', message: t('clochat.notify.noMessage') })
+    return
+  }
+
+  try {
+    // 清空输入框
+    inputText.value = ''
+
+    // 添加消息到数据库，标记为未读
+    const response = await addChatRecord({
+      chat_id: chatDetail.value.chat_id,
+      content: user_message,
+      type: 'user',
+      is_read: false,
+    })
+
+    // 将消息ID添加到缓冲区
+    if (response?.result) {
+      bufferMessageIds.value.push(response.result.chat_record_id)
+
+      // 添加到UI显示
+      chatDetail.value.record_list.push({
+        chat_record_id: response.result.chat_record_id,
+        content: user_message,
+        type: 'user',
+        create_time: response.result.create_time,
+      })
+
+      scroolBottom()
+    }
+
+    // 重置输入监控
+    resetTypingTimer()
+  }
+  catch (err) {
+    console.error(err)
+    showNotify({ type: 'danger', message: t('clochat.notify.sendMessageFailed') })
+  }
+}
+
+// 发送缓冲区内的所有消息
+async function sendBufferedMessages() {
+  if (loading.value || bufferMessageIds.value.length === 0)
     return
 
   try {
-    const user_message = inputText.value.trim()
-    inputText.value = ''
     loading.value = true
-    if (user_message !== '') {
-      chatDetail.value.record_list.push({
-        chat_record_id: v4(),
-        content: user_message,
-        type: 'user',
-      })
-    }
-    scroolBottom()
+
+    // 发送消息并标记为已读
     await api.sendMessage({
       setting_id: setting_id.value,
       chat_id: chatDetail.value.chat_id,
-      user_message,
+      user_message: '', // 不再通过这个字段发送消息
+      message_ids: bufferMessageIds.value,
     })
+
+    // 清空缓冲区
+    bufferMessageIds.value = []
+
+    // 刷新聊天详情
     await fetchChatDetail()
   }
   catch (err) {
@@ -162,6 +214,32 @@ async function handleSendMessage() {
   finally {
     loading.value = false
   }
+}
+
+// 重置输入监控计时器
+function resetTypingTimer() {
+  if (typingTimer.value) {
+    clearTimeout(typingTimer.value)
+    typingTimer.value = null
+  }
+}
+// 监控用户输入
+function handleUserTyping() {
+  if (bufferMessageIds.value.length > 0) {
+  // 清除之前的计时器
+    resetTypingTimer()
+
+    // 设置新的计时器
+    typingTimer.value = setTimeout(() => {
+    // 如果缓冲区有消息，发送它们
+      sendBufferedMessages()
+    }, TYPING_DELAY) as unknown as number
+  }
+}
+
+// 处理发送按钮点击
+async function handleSendMessage() {
+  await addMessageToBuffer()
 }
 
 function scroolBottom() {
@@ -207,6 +285,10 @@ onUnmounted(() => {
     historyListRef.value.removeEventListener('scroll', handleScroll)
   }
 })
+onBeforeRouteLeave(() => {
+  resetTypingTimer()
+  sendBufferedMessages()
+})
 
 // 处理滚动事件
 function handleScroll() {
@@ -230,8 +312,8 @@ watch(() => route.params.id, async (newId) => {
       pageSize: 20,
     }
     await fetchChatDetail()
-    scroolBottom()
   }
+  scroolBottom()
 }, { immediate: false }) // 设置immediate为false，避免初始化时重复调用
 </script>
 
@@ -239,7 +321,7 @@ watch(() => route.params.id, async (newId) => {
   <div class="mx-auto bg-white flex flex-col h-full max-w-[375px] w-full inset-0 fixed z-50">
     <NavBar :title="chatDetail?.friend_name" left-arrow @click-left-button="handleBack">
       <template #right>
-        <van-icon name="ellipsis" size="20" @click="openSettings" />
+        <van-icon name="ellipsis" color="#ABB0BF" size="20" @click="openSettings" />
       </template>
     </NavBar>
 
@@ -259,16 +341,19 @@ watch(() => route.params.id, async (newId) => {
           {{ t('clochat.chat.loadMore') }}
         </div>
       </div>
-      <div v-for="chat in chatDetail.record_list" :key="chat.chat_record_id">
+      <div v-for="(chat, index) in chatDetail.record_list" :key="chat.chat_record_id">
         <div v-if="chat.type === 'user'" class="flex flex-row-reverse w-full">
           <van-image
             width="2.5rem"
             height="2.5rem"
             src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
-            class="flex-shrink-0"
+            round
           />
-          <div class="text-base text-white mr-2 px-3 py-1.5 rounded-2 bg-[#07C160] flex flex-wrap max-w-[70%] break-all text-pretty items-center">
+          <div class="text-base text-[#606A82] leading-normal mr-2 px-3 py-2 rounded-2 bg-[#E5E5E5] flex flex-wrap max-w-[70%] break-all text-pretty items-center">
             {{ chat.content }}
+          </div>
+          <div class="text-xs text-[#a6a6a699] mr-2 self-center">
+            {{ moment(chat.create_time).format('HH:mm') }}
           </div>
         </div>
         <div v-else class="flex flex-row w-full">
@@ -276,33 +361,50 @@ watch(() => route.params.id, async (newId) => {
             width="2.5rem"
             height="2.5rem"
             :src="chatDetail?.friend_avatar"
-            class="flex-shrink-0"
+            round
           />
-          <div class="text-base text-white ml-2 px-3 py-1.5 rounded-2 bg-[#777] flex flex-wrap max-w-[70%] break-all text-pretty items-center">
+          <div class="text-base text-[#606A82] leading-normal ml-2 px-3 py-2 rounded-2 bg-[#F0F4FE] flex flex-wrap max-w-[70%] break-all text-pretty items-center">
             {{ chat.content }}
           </div>
+          <div class="text-xs text-[#a6a6a699] ml-2 self-center">
+            {{ moment(chat.create_time).format('HH:mm') }}
+          </div>
+        </div>
+        <div v-if="chat.type === 'user' && chatDetail.record_list[index + 1]?.type !== 'user'" class="text-sm text-[#68646C] mr-12 flex items-center justify-end">
+          <template v-if="chat.is_read">
+            <div class="i-carbon:checkmark-filled text-[10px] mr-0.5" />
+            {{ t('clochat.chat.isRead') }}
+          </template>
+          <template v-else>
+            <div class="i-carbon:circle-outline text-[10px] mr-0.5" />
+            {{ t('clochat.chat.isNotRead') }}
+          </template>
         </div>
       </div>
       <!-- 加载状态 -->
       <van-loading v-if="loading" class="mx-auto my-4" />
     </div>
     <!-- 对话输入框 -->
-    <div class="p-2 border-t-1 border-t-white/10 border-t-solid flex flex-shrink-0">
+    <div class="border-t-1 border-t-[#E8EAF3] border-t-solid flex flex-shrink-0 items-center">
       <van-field
         v-model="inputText"
         center
+        :border="false"
         :placeholder="t('clochat.chat.inputPlaceholder')"
+        class="!px-3 !py-4"
         @keypress.enter="handleSendMessage"
-      />
-      <div
-        class="ml-2 flex-shrink-0"
+        @input="handleUserTyping"
       >
-        <van-button
-          type="primary"
-          icon="edit"
-          @click="handleSendMessage"
-        />
-      </div>
+        <template #left-icon>
+          <div class="i-carbon:add-filled text-[#ABB0BF] mr-1 h-6 w-6" />
+        </template>
+        <template #button>
+          <div class="flex items-center">
+            <div class="i-carbon:face-satisfied text-[#ABB0BF] ml-1 h-6 w-6" />
+            <div class="i-carbon:send-filled text-[#ABB0BF] ml-1 h-6 w-6" @click="handleSendMessage" />
+          </div>
+        </template>
+      </van-field>
     </div>
   </div>
 </template>

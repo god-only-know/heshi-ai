@@ -47,6 +47,14 @@ export function deleteChat(chatId: string) {
 }
 
 // 聊天记录相关API
+export function markMessagesAsRead(message_ids: string[]) {
+  return request.post('/clochat/chat-records/mark-as-read', { message_ids })
+}
+
+export function getUnreadMessages(chatId: string) {
+  return request.post('/clochat/chat-records/unread', { chatId })
+}
+
 export function getChatRecords(chatId: string) {
   return request.post('/clochat/chat-records/list', { chatId })
 }

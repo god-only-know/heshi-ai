@@ -32,19 +32,16 @@ async function sendTestMessage(data: Api.LLMMoel.SendTestMessageParams): Promise
 }
 // 发送链接信息
 async function sendMessage(data: Api.LLMMoel.SendMessageParams): Promise<any> {
-  if (data.user_message !== '') {
-    // 添加历史记录
-    await chatRecordService.addChatRecord({
-      chat_id: data.chat_id,
-      content: data.user_message,
-      type: 'user',
-    })
+  // 如果有消息ID数组，则将这些消息标记为已读
+  if (data.message_ids && data.message_ids.length > 0) {
+    await chatRecordService.markMessagesAsRead(data.message_ids)
   }
+
   // 获取历史记录
   const messages = await chatRecordService.getChatRecords(data.chat_id)
   const apiSetting = await apiSettingService.getApiSettingById(data.setting_id)
-  const apiKey = apiSetting.api_key
-  const apiUrl = apiSetting.api_url
+  // const apiKey = apiSetting.api_key
+  // const apiUrl = apiSetting.api_url
   const params = {
     model: apiSetting.model,
     max_tokens: 2048,
@@ -56,16 +53,18 @@ async function sendMessage(data: Api.LLMMoel.SendMessageParams): Promise<any> {
     )),
   }
 
-  const requestUrl = `${apiUrl}/chat/completions`
-  const res = await postLLMModel(apiKey, requestUrl, params)
+  // const requestUrl = `${apiUrl}/chat/completions`
+  // const res = await postLLMModel(apiKey, requestUrl, params)
 
-  const content = res?.choices?.[0]?.message?.content
-  await chatRecordService.addChatRecord({
+  // const content = res?.choices?.[0]?.message?.content
+  console.log(params, 'params')
+  const item = {
     chat_id: data.chat_id,
-    content,
-    type: 'assistant',
-  })
-  return res
+    content: 'test',
+    type: 'assistant' as const,
+  }
+  await chatRecordService.addChatRecord(item)
+  return item
 }
 
 async function postLLMModel(apiKey, apiUrl, params): Promise<any> {

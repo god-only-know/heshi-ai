@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { Overlay } from 'vant'
+import { ref } from 'vue'
+import { Popup } from 'vant'
 import ApiSetting from '@/components/ApiSetting/index.vue'
 import { useEventListener } from '@vant/use'
+import clochatIcon from '@/assets/icons/clochat-icon.svg'
+import worldBookIcon from '@/assets/icons/world-book-icon.svg'
+import defaultAvatar from '@/assets/images/default-avatar.svg'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -18,16 +21,9 @@ const routes = [
   // { name: 'ScrollCache', path: '/scroll-cache' },
   // { name: 'Settings', path: '/settings' },
   // { name: 'UnoCSS', path: '/unocss' },
-  { name: 'Clochat', path: '/clochat' },
+  { name: 'Clochat', path: '/clochat', icon: clochatIcon },
+  { name: '世界书', path: '/clochat', icon: worldBookIcon },
 ]
-
-const items = computed(() =>
-  routes.map((r) => {
-    const label = t(`navbar.${r.name}`) || r.name
-    const initials = String(label).trim().slice(0, 1)
-    return { ...r, label, initials }
-  }),
-)
 
 function go(path: string) {
   router.push({ path }).catch(() => {})
@@ -129,25 +125,6 @@ function onMouseUp() {
   startY.value = null
 }
 
-// 新增状态栏时间响应式数据
-const currentTime = ref('')
-const currentDate = ref('')
-
-// 更新时间函数
-function updateTime() {
-  const now = new Date()
-  currentTime.value = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-  currentDate.value = `${now.getMonth() + 1}月${now.getDate()}日 星期${['日', '一', '二', '三', '四', '五', '六'][now.getDay()]}`
-}
-
-// 初始化时间并设置定时更新
-onMounted(() => {
-  updateTime()
-  const timer = setInterval(updateTime, 1000)
-  onUnmounted(() => {
-    clearInterval(timer)
-  })
-})
 useEventListener('touchstart', onTouchStart, {
   passive: false,
 })
@@ -173,62 +150,60 @@ useEventListener('mouseup', onMouseUp, {
     <nav-time-bar />
   </div>
   <div class="page-home p-5 pt-[34px] w-full">
-    <!-- 下拉触发顶部 Overlay 面板（支持触摸与鼠标拖拽） -->
-    <Overlay v-model:show="showOverlay" @click="closeOverlay">
+    <Popup v-model:show="showOverlay" position="top" round :overlay="false" safe-area-inset-top closeable close-icon-position="bottom-right" @close="closeOverlay">
       <div
-        class="mx-auto p-5 pt-[34px] max-w-[720px] w-full shadow-md from-white to-slate-50 bg-gradient-to-b"
+        class="mx-auto p-5 pt-[34px] flex flex-col h-[80vh] max-w-[720px] w-full shadow-md from-white to-slate-50 backdrop-blur-2xl"
         @click.stop
       >
+        <div class="mb-6 flex flex-col h-20 w-20 items-center">
+          <van-image :src="defaultAvatar" height="100%" width="100%" fix="cover" />
+        </div>
         <div class="flex gap-2 items-center">
           <van-button type="primary" :plain="!showApiSetting" size="small" class="px-3" @click="openApiSetting">
             {{ t('navbar.ApiSetting') }}
           </van-button>
-          <van-button type="primary" :plain="!showApiSetting" size="small" class="px-3" @click="openApiSetting">
+          <!-- <van-button type="primary" :plain="!showApiSetting" size="small" class="px-3" @click="openApiSetting">
             {{ t('navbar.Settings') }}
-          </van-button>
+          </van-button> -->
         </div>
         <!-- 如果 showApiSetting 为真则显示 ApiSetting 组件 -->
-        <div v-if="showApiSetting" class="mt-10 border-t-1 border-[--van-border-color] flex-1">
+        <div v-if="showApiSetting" class="mt-2 border-t-1 border-[--van-border-color] flex-1 overflow-auto">
           <ApiSetting />
         </div>
       </div>
-    </Overlay>
+    </Popup>
 
     <!-- 时间小部件（作为网格首项） -->
-    <div class="mb-8 mt-4 px-8 py-4 rounded-2xl bg-white/60 col-span-5 backdrop-blur-[100%]">
-      <div class="text-[30px] font-medium">
-        {{ currentTime }}
-      </div>
-      <div class="text-[12px] opacity-80">
-        {{ currentDate }}
-      </div>
-    </div>
+    <ClockTime />
 
     <!-- 应用图标网格 (使用 Tailwind/UnoCSS 原子类) -->
     <div role="list" aria-label="应用列表" class="gap-5 grid grid-cols-5">
       <div
-        v-for="item in items" :key="item.name" :aria-label="item.label" role="listitem"
+        v-for="item in routes" :key="item.path" :aria-label="item.name" role="listitem"
         class="p-0 border-0 bg-transparent flex flex-col cursor-pointer items-center" @click="go(item.path)"
       >
         <div
-          class="mb-2 rounded-[14px] bg-[#f0f2f5] flex h-[50px] w-[50px] select-none shadow-[0_4px_10px_rgba(0,0,0,0.1)] transition-transform duration-200 ease-linear items-center justify-center overflow-hidden"
+
+          class="mb-2 rounded-[14px] bg-[#D8D8D8] flex h-[50px] w-[50px] select-none shadow-[0px_2px_5px_0px_rgba(0,0,0,0.3)] transition-transform duration-200 ease-linear items-center justify-center overflow-hidden"
         >
-          <span class="text-[22px] text-slate-700 font-semibold">{{ item.initials }}</span>
+          <van-image :src="item.icon" height="30" width="30" />
         </div>
-        <div class="text-[14px] text-white/70 text-center truncate">
-          {{ item.label }}
+
+        <div class="text-[10px] text-[#2D2D2D] font-semibold text-center truncate">
+          {{ item.name }}
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="less">
 .page-home {
   -webkit-tap-highlight-color: transparent;
   background-image: url('@/assets/images/home-bg.png');
   background-position: center;
   background-size: cover;
   height: 100vh;
+  --van-popup-background: none;
 }
 </style>

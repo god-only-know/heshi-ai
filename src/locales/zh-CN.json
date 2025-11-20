@@ -155,11 +155,15 @@
     "notify": {
       "noChat": "无对话",
       "createChatFailed": "创建聊天失败",
-      "sendMessageFailed": "发送消息失败"
+      "sendMessageFailed": "发送消息失败",
+      "sending": "消息发送中...",
+      "noMessage": "请输入消息内容"
     },
     "chat": {
       "inputPlaceholder": "输入消息...",
-      "loadMore": "加载更多历史记录"
+      "loadMore": "加载更多历史记录",
+      "isRead": "已读",
+      "isNotRead": "未读"
     },
     "settings": {
       "title": "聊天设置",

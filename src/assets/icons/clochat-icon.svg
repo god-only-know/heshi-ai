@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none"
+  version="1.1" width="30" height="27" viewBox="0 0 30 27">
+  <defs>
+    <filter id="master_svg0_27_6401" filterUnits="objectBoundingBox"
+      color-interpolation-filters="sRGB" x="0" y="0" width="1" height="1">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+      <feColorMatrix in="SourceAlpha" type="matrix" result="hardAlpha"
+        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dy="4" dx="0" />
+      <feGaussianBlur stdDeviation="5" />
+      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+      <feColorMatrix type="matrix"
+        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.30000001192092896 0" />
+      <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+    </filter>
+  </defs>
+  <g filter="url(#master_svg0_27_6401)">
+    <path
+      d="M0,8.9906101C0,4.0252347,4.0148096,0,9.0009899,0L20.998951,0C25.9701,0,30,4.0421696,30,8.9906101L30,27L9.0009899,27C4.0298853,27,0,22.957802,0,18.009449L0,8.9906101ZM18,12L18,15L21,15L21,12L18,12ZM9,12L9,15L12,15L12,12L9,12Z"
+      fill="#221717" fill-opacity="1" style="mix-blend-mode:passthrough" />
+  </g>
+</svg>
