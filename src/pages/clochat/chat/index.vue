@@ -2,15 +2,18 @@
 import api from '@/api/index'
 import moment from 'moment'
 
+defineOptions({
+  name: 'Chat',
+})
 const router = useRouter()
 // 使用ref存储数据
 const chatList = ref<Clochat.ChatItem []>([])
 const loading = ref(false)
-
 // 获取聊天列表
 async function fetchChatList() {
   try {
     loading.value = true
+    chatList.value = []
     const response = await api.getChats()
     chatList.value = response?.result || []
   }
@@ -26,8 +29,6 @@ async function fetchChatList() {
 function handleChatItemClick(chatId: string) {
   router.push(`/clochat/chat/${chatId}`)
 }
-
-// 当组件被激活时刷新数据
 onActivated(() => {
   fetchChatList()
 })

@@ -8,7 +8,7 @@ const routers: RouteRecordRaw[] = [
   },
   {
     path: '/clochat',
-    name: 'clochat',
+    name: 'Clochat',
     component: () => import('@/pages/clochat/index.vue'),
     meta: {
       keepAlive: true,
@@ -17,7 +17,7 @@ const routers: RouteRecordRaw[] = [
     children: [
       {
         path: '/clochat/chat',
-        name: 'chat',
+        name: 'Chat',
         meta: {
           title: 'clochat.navbar.chat',
           keepAlive: true,
@@ -26,16 +26,17 @@ const routers: RouteRecordRaw[] = [
       },
       {
         path: '/clochat/chat/:id',
-        name: 'chatDetail',
+        name: 'ChatDetail',
         meta: {
-          title: '',
+          title: 'clochat.navbar.chatDetail',
           keepAlive: true,
+          noTab: true,
         },
         component: () => import('@/pages/clochat/chat/detail.vue'),
       },
       {
         path: '/clochat/friend',
-        name: 'friend',
+        name: 'Friend',
         meta: {
           title: 'clochat.navbar.friend',
           keepAlive: true,
@@ -44,7 +45,7 @@ const routers: RouteRecordRaw[] = [
       },
       {
         path: '/clochat/activity',
-        name: 'activity',
+        name: 'Activity',
         meta: {
           title: 'clochat.navbar.activity',
           keepAlive: true,
@@ -53,7 +54,7 @@ const routers: RouteRecordRaw[] = [
       },
       {
         path: '/clochat/my',
-        name: 'my',
+        name: 'My',
         meta: {
           title: 'clochat.navbar.my',
           keepAlive: true,

@@ -45,6 +45,14 @@ declare namespace Api {
       is_read?: boolean
     }
 
+    // 编辑对话记录参数
+    interface UpdateRecordParams {
+      chat_record_id: string
+      content?: string
+      type?: 'user' | 'assistant'
+      is_read?: boolean
+    }
+
     // 添加对话参数
     interface AddChatParams {
       friend_id: string

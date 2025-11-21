@@ -15,7 +15,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_APP_PUBLIC_PATH),
   routes: routers,
 })
-console.log(router, 'router')
 
 router.beforeEach(async (to: EnhancedRouteLocation) => {
   NProgress.start()

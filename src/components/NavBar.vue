@@ -28,7 +28,7 @@ function onBack() {
   }
 }
 const title = computed(() => {
-  return props.title || (route.meta?.title && t(route.meta?.title))
+  return props.title ?? (route.meta?.title && t(route.meta?.title))
 })
 </script>
 

@@ -3,6 +3,9 @@ import api from '@/api/index'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
 
+defineOptions({
+  name: 'Friend',
+})
 const { t } = useI18n()
 
 // 使用ref存储数据

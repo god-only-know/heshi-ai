@@ -8,6 +8,7 @@ import '@/styles/app.less'
 import '@/styles/var.less'
 import { i18n } from '@/utils/i18n'
 import { initServer } from '@/server'
+import directives from '@/directives'
 
 // Vant 桌面端适配
 import '@vant/touch-emulator'
@@ -30,6 +31,7 @@ app.use(head)
 app.use(router)
 app.use(pinia)
 app.use(i18n)
+app.use(directives)
 
 // 初始化服务（包括数据库）
 initServer().then(() => {

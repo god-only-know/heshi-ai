@@ -64,6 +64,10 @@ function getChatRecordsPaginated(data: {
 function addChatRecord(data: Api.Clochat.AddRecordParams) {
   return chatRecordService.addChatRecord(data)
 }
+/** 编辑聊天记录 */
+function updateChatRecord(data: Api.Clochat.UpdateRecordParams) {
+  return chatRecordService.updateChatRecord(data)
+}
 /** 删除聊天记录 */
 function deleteChatRecord(data: { recordId: string }) {
   return chatRecordService.deleteChatRecord(data.recordId)
@@ -94,6 +98,11 @@ export default [
     method: 'POST',
     path: '/api/clochat/chat-records',
     handler: addChatRecord,
+  },
+  {
+    method: 'POST',
+    path: '/api/clochat/chat-records/update',
+    handler: updateChatRecord,
   },
   {
     method: 'POST',

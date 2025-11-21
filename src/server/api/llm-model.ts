@@ -38,10 +38,11 @@ async function sendMessage(data: Api.LLMMoel.SendMessageParams): Promise<any> {
   }
 
   // 获取历史记录
-  const messages = await chatRecordService.getChatRecords(data.chat_id)
+  const messages = await chatRecordService.getRecentRounds(data.chat_id, 5)
   const apiSetting = await apiSettingService.getApiSettingById(data.setting_id)
   // const apiKey = apiSetting.api_key
   // const apiUrl = apiSetting.api_url
+
   const params = {
     model: apiSetting.model,
     max_tokens: 2048,
@@ -63,8 +64,8 @@ async function sendMessage(data: Api.LLMMoel.SendMessageParams): Promise<any> {
     content: 'test',
     type: 'assistant' as const,
   }
-  await chatRecordService.addChatRecord(item)
-  return item
+  const res = await chatRecordService.addChatRecord(item)
+  return res
 }
 
 async function postLLMModel(apiKey, apiUrl, params): Promise<any> {

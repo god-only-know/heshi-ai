@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { useRouteCacheStore } from '@/stores'
 
+defineOptions({
+  name: 'Clochat',
+})
 const { t } = useI18n()
 const tabs = [
   {
@@ -24,26 +28,25 @@ const tabs = [
     icon: 'i-carbon:user',
   },
 ]
+const routeCacheStore = useRouteCacheStore()
+const keepAliveRouteNames = computed(() => {
+  return toRaw(routeCacheStore.routeCaches)
+})
 </script>
 
 <template>
-  <div class="pb-[50px] flex flex-col h-[100vh] overflow-auto">
-    <div class="flex-grow h-full">
-      <router-view v-slot="{ Component, route }">
-        <keep-alive>
+  <router-view v-slot="{ Component, route }">
+    <div class="flex flex-col h-[100vh] overflow-auto">
+      <div class="flex-grow h-full">
+        <keep-alive :include="keepAliveRouteNames">
           <component
             :is="Component"
-            v-if="route.meta.keepAlive"
-            :key="route.name"
           />
         </keep-alive>
-        <component
-          :is="Component"
-          v-if="!route.meta.keepAlive"
-          :key="route.name"
-        />
-      </router-view>
+      </div>
+      <div v-if="!route.meta.noTab" class="h-[50px]">
+        <TabBar :tabs="tabs" />
+      </div>
     </div>
-    <TabBar :tabs="tabs" />
-  </div>
+  </router-view>
 </template>

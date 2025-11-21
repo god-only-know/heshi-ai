@@ -66,6 +66,11 @@
     "finished": "已经到底啦 ~",
     "loading": "加载中..."
   },
+  "components": {
+    "infiniteScrollList": {
+      "loadMore": "加载更多"
+    }
+  },
   "login": {
     "login": "登录",
     "logout": "退出登录",
@@ -163,7 +168,27 @@
       "inputPlaceholder": "输入消息...",
       "loadMore": "加载更多历史记录",
       "isRead": "已读",
-      "isNotRead": "未读"
+      "isNotRead": "未读",
+      "multiSelect": "多选",
+      "copy": "复制",
+      "edit": "编辑",
+      "delete": "删除",
+      "favorite": "收藏",
+      "cancel": "取消",
+      "deleteTitle": "删除消息",
+      "deleteConfirmSingle": "确定要删除这条消息吗？",
+      "deleteConfirmMultiple": "确定要删除选中的 {count} 条消息吗？",
+      "deleteSuccess": "删除成功",
+      "deleteFailed": "删除失败",
+      "copySuccess": "复制成功",
+      "copyFailed": "复制失败",
+      "editOnlySelf": "只能编辑自己的消息",
+      "editSuccess": "编辑成功",
+      "editFailed": "编辑失败",
+      "save": "保存",
+      "favoriteSuccess": "已收藏消息",
+      "favoriteMultipleSuccess": "已收藏 {count} 条消息",
+      "today": "今天"
     },
     "settings": {
       "title": "聊天设置",
@@ -174,7 +199,6 @@
       "blockConfirmMessage": "确定要拉黑 {name} 吗？",
       "blockSuccess": "拉黑成功",
       "operationFailed": "操作失败",
-      "cancel": "取消",
       "noIntroduce": "暂无介绍",
       "clearHistory": "清空聊天历史",
       "clearHistoryConfirm": "确认清空",

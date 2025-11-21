@@ -73,6 +73,9 @@ export function getChatRecordsPaginated(params: ChatRecordsPaginatedParams) {
 export function addChatRecord(data: Api.Clochat.AddRecordParams) {
   return request.post('/clochat/chat-records', data)
 }
+export function updateChatRecord(data: Api.Clochat.UpdateRecordParams) {
+  return request.post('/clochat/chat-records/update', data)
+}
 
 export function deleteChatRecord(recordId: string) {
   return request.post('/clochat/chat-records/delete', { recordId })

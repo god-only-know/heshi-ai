@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { useRouteCacheStore } from './stores'
 
 const { t } = useI18n()
 
@@ -24,12 +25,11 @@ useHead({
   ],
 })
 
-// const routeCacheStore = useRouteCacheStore()
+const routeCacheStore = useRouteCacheStore()
 
-// const keepAliveRouteNames = computed(() => {
-//   return routeCacheStore.routeCaches
-// })
-// console.log(keepAliveRouteNames.value)
+const keepAliveRouteNames = computed(() => {
+  return toRaw(routeCacheStore.routeCaches)
+})
 const mode = computed(() => {
   return isDark.value ? 'dark' : 'light'
 })
@@ -41,16 +41,11 @@ const mode = computed(() => {
       <router-view v-slot="{ Component, route }">
         <transition name="slide">
           <section v-if="route.path" class="app-wrapper">
-            <keep-alive>
+            <keep-alive :include="keepAliveRouteNames">
               <component
                 :is="Component"
-                v-if="route.meta.keepAlive"
               />
             </keep-alive>
-            <component
-              :is="Component"
-              v-if="!route.meta.keepAlive"
-            />
           </section>
         </transition>
       </router-view>

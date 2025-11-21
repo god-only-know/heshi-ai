@@ -41,6 +41,12 @@ async function handleApiRequest(apiKey: string, config: InternalAxiosRequestConf
     if (apiMap[apiKey]) {
       const requestParams = config.data || config.params
 
+      // const promise = new Promise((resolve) => {
+      //   setTimeout(() => {
+      //     resolve(true)
+      //   }, 1000)
+      // })
+      // await promise
       const response = await apiMap[apiKey](requestParams)
       const builtResponse = builder(response)
 

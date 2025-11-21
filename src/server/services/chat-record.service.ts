@@ -96,6 +96,16 @@ export class ChatRecordService {
     return newRecord
   }
 
+  // 编辑聊天记录
+  async updateChatRecord(params: Api.Clochat.UpdateRecordParams): Promise<void> {
+    const findItem = await db.chatRecords.get(params.chat_record_id)
+    await db.chatRecords.update(params.chat_record_id, {
+      content: params.content,
+      type: params.type ?? findItem.type,
+      is_read: params.is_read ?? findItem.is_read,
+    })
+  }
+
   // 删除聊天记录
   async deleteChatRecord(recordId: string): Promise<void> {
     await db.chatRecords.delete(recordId)
@@ -115,6 +125,31 @@ export class ChatRecordService {
       .equals(chatId)
       .filter(record => record.content.includes(keyword))
       .toArray()
+  }
+
+  // 获取最近几轮对话
+  async getRecentRounds(chatId: string, rounds = 5): Promise<ChatRecordModel[]> {
+    const allRecords = await this.getChatRecords(chatId)
+    const result: ChatRecordModel[] = []
+    let roundCount = 0
+    let i = allRecords.length - 1
+
+    // 从最新记录开始向前遍历
+    while (i >= 0 && roundCount < rounds) {
+    // 情况1：当前是AI回复，检查前一条是否是用户消息
+      if (allRecords[i].type !== allRecords[i - 1].type && i > 0) {
+      // 将用户消息插入到结果集开头（保持时间顺序）
+        result.unshift(allRecords[i - 1], allRecords[i])
+        roundCount++
+        i -= 2 // 跳过已处理的两条
+      }
+      // 其他情况：跳过无效记录
+      else {
+        i--
+      }
+    }
+
+    return result
   }
 }
 
