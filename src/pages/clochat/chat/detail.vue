@@ -5,6 +5,7 @@ import useApiSettingStore from '@/stores/modules/apiSetting'
 import ChatSettings from '@/components/Clochat/ChatSettings/index.vue'
 import Popconfirm from '@/components/Popconfirm/index.vue'
 import InfiniteScrollList from '@/components/InfiniteScrollList/index.vue'
+import EmojiPicker from '@/components/EmojiPicker/index.vue'
 import type { ChatRecordsPaginatedParams } from '@/api/clochat'
 import moment from 'moment'
 import { showDialog, showFailToast, showLoadingToast, showSuccessToast, showToast } from 'vant'
@@ -30,6 +31,7 @@ const inputText = ref('')
 const loading = ref(false)
 const setting_id = ref('')
 const showSettings = ref(false)
+const showEmojiPicker = ref(false)
 
 // 长按菜单相关
 const showActionMenu = ref(false)
@@ -323,6 +325,21 @@ function openSettings() {
 // 关闭设置弹窗
 function closeSettings() {
   showSettings.value = false
+}
+
+// 打开表情选择器
+function openEmojiPicker() {
+  showEmojiPicker.value = true
+}
+
+// 关闭表情选择器
+function closeEmojiPicker() {
+  showEmojiPicker.value = false
+}
+
+// 选择表情
+function selectEmoji(emoji: string) {
+  inputText.value += emoji
 }
 
 // 刷新聊天数据
@@ -793,11 +810,14 @@ watch(() => route.params.id, async (newId) => {
         </template>
         <template #button>
           <div class="flex items-center">
-            <div class="i-carbon:face-satisfied text-[#ABB0BF] ml-1 h-6 w-6" />
-            <div class="i-carbon:send-filled text-[#ABB0BF] ml-1 h-6 w-6" @click="handleSendMessage" />
+            <div class="i-carbon:face-satisfied text-[#ABB0BF] ml-1 h-6 w-6 cursor-pointer" @click="openEmojiPicker" />
+            <div class="i-carbon:send-filled text-[#ABB0BF] ml-1 h-6 w-6 cursor-pointer" @click="handleSendMessage" />
           </div>
         </template>
       </van-field>
     </div>
+
+    <!-- 表情选择器 -->
+    <EmojiPicker v-model:visible="showEmojiPicker" @close="closeEmojiPicker" @select="selectEmoji" />
   </div>
 </template>

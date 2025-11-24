@@ -10,7 +10,7 @@ interface NavBarProps {
 const props = withDefaults(defineProps<NavBarProps>(), {
   leftArrow: false,
   rightArrow: false,
-  title: '',
+  title: undefined,
 })
 const attrs = useAttrs()
 const { t } = useI18n()
