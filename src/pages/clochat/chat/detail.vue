@@ -2,10 +2,9 @@
 import api from '@/api/index'
 import { useI18n } from 'vue-i18n'
 import useApiSettingStore from '@/stores/modules/apiSetting'
-import ChatSettings from '@/components/ChatSettings/index.vue'
+import ChatSettings from '@/components/Clochat/ChatSettings/index.vue'
 import Popconfirm from '@/components/Popconfirm/index.vue'
 import InfiniteScrollList from '@/components/InfiniteScrollList/index.vue'
-import { addChatRecord, deleteChatRecord, getChatRecordsPaginated } from '@/api/clochat'
 import type { ChatRecordsPaginatedParams } from '@/api/clochat'
 import moment from 'moment'
 import { showDialog, showFailToast, showLoadingToast, showSuccessToast, showToast } from 'vant'
@@ -18,15 +17,15 @@ const router = useRouter()
 const apiSettingStore = useApiSettingStore()
 const { t } = useI18n()
 
-// 使用ref存储数据
 const chatDetail = ref<Api.Clochat.getChatDetailResult>({
   chat_id: '',
   create_time: 0,
   friend_id: '',
   friend_name: '',
   friend_avatar: '',
-  record_list: [],
 })
+// 聊天记录单独使用ref存储
+const chatRecords = ref<Api.Clochat.getChatRecordListResult>([])
 const inputText = ref('')
 const loading = ref(false)
 const setting_id = ref('')
@@ -72,9 +71,9 @@ const isFirstLoad = ref(true)
 const infiniteScrollListRef = ref<InstanceType<typeof InfiniteScrollList> | null>(null)
 
 const chatMessageList = computed(() => {
-  return chatDetail.value.record_list.map((record, index) => {
+  return chatRecords.value.map((record, index) => {
     let show_day = ''
-    if (!moment(chatDetail.value.record_list[index - 1]?.create_time).isSame(moment(record.create_time), 'day')) {
+    if (!moment(chatRecords.value[index - 1]?.create_time).isSame(moment(record.create_time), 'day')) {
       if (moment(record.create_time).isSame(moment(), 'day')) {
         show_day = t('clochat.chat.today')
       }
@@ -85,7 +84,7 @@ const chatMessageList = computed(() => {
     return {
       ...record,
       create_time: moment(record.create_time).format('HH:mm'),
-      is_show_status: record.type === 'user' && chatDetail.value.record_list[index + 1]?.type !== 'user',
+      is_show_status: record.type === 'user' && chatRecords.value[index + 1]?.type !== 'user',
       show_day,
     }
   })
@@ -104,9 +103,6 @@ async function fetchChatDetail() {
 
     // 设置聊天ID
     chatRecordsParams.value.chatId = chatId
-
-    // 获取聊天记录
-    await fetchChatRecords()
   }
   catch (err) {
     console.error(err)
@@ -123,17 +119,17 @@ async function fetchChatRecords() {
     return
 
   try {
-    const response = await getChatRecordsPaginated(chatRecordsParams.value)
+    const response = await api.getChatRecordsPaginated(chatRecordsParams.value)
     if (response?.result) {
       const { records, hasMore } = response.result
 
       // 如果是第一页，直接替换记录列表
       if (chatRecordsParams.value.page === 1) {
-        chatDetail.value.record_list = records
+        chatRecords.value = records
       }
       else {
         // 否则将新加载的记录添加到列表前面
-        chatDetail.value.record_list = [...records, ...chatDetail.value.record_list]
+        chatRecords.value = [...records, ...chatRecords.value]
       }
 
       // 更新是否有更多历史记录
@@ -158,12 +154,12 @@ async function loadMoreHistory(direction = 'up') {
       // 增加页码
       chatRecordsParams.value.page = (chatRecordsParams.value.page || 1) + 1
 
-      const response = await getChatRecordsPaginated(chatRecordsParams.value)
+      const response = await api.getChatRecordsPaginated(chatRecordsParams.value)
       if (response?.result) {
         const { records, hasMore } = response.result
 
         // 将新加载的记录添加到列表前面
-        chatDetail.value.record_list = [...records, ...chatDetail.value.record_list]
+        chatRecords.value = [...records, ...chatRecords.value]
 
         // 更新是否有更多历史记录
         hasMoreHistory.value = hasMore
@@ -204,12 +200,14 @@ async function addMessageToBuffer() {
     // 清空输入框
     inputText.value = ''
 
-    // 添加消息到数据库，标记为未读
-    const response = await addChatRecord({
+    // 添加消息到数据库，标记为未读，并设置拉黑状态
+    const response = await api.addChatRecord({
       chat_id: chatDetail.value.chat_id,
       content: user_message,
       type: 'user',
       is_read: false,
+      is_blocked_by_user: chatDetail.value.is_blocked_by_user, // 好友被用户拉黑
+      is_blocking_user: chatDetail.value.is_blocking_user, // 用户被好友拉黑
     })
 
     // 将消息ID添加到缓冲区
@@ -217,14 +215,17 @@ async function addMessageToBuffer() {
       bufferMessageIds.value.push(response.result.chat_record_id)
 
       // 添加到UI显示
-      chatDetail.value.record_list.push({
+      chatRecords.value.push({
         chat_record_id: response.result.chat_record_id,
         content: user_message,
         type: 'user',
         create_time: response.result.create_time,
+        is_blocked_by_user: chatDetail.value.is_blocked_by_user,
+        is_blocking_user: chatDetail.value.is_blocking_user,
       })
-
-      scroolBottom()
+      nextTick(() => {
+        scroolBottom()
+      })
     }
 
     // 重置输入监控
@@ -252,7 +253,7 @@ async function sendBufferedMessages() {
       message_ids: bufferMessageIds.value,
     })
     // 更新已读状态
-    chatDetail.value.record_list.forEach((record) => {
+    chatRecords.value.forEach((record) => {
       if (bufferMessageIds.value.includes(record.chat_record_id))
         record.is_read = true
     })
@@ -260,7 +261,13 @@ async function sendBufferedMessages() {
     // 清空缓冲区
     bufferMessageIds.value = []
     if (response?.result) {
-      chatDetail.value.record_list.push(response?.result)
+      // 添加AI回复，并设置拉黑状态
+      const aiResponse = {
+        ...response.result,
+        is_blocked_by_user: chatDetail.value.is_blocked_by_user,
+        is_blocking_user: chatDetail.value.is_blocking_user,
+      }
+      chatRecords.value.push(aiResponse)
       scroolBottom()
     }
   }
@@ -318,10 +325,19 @@ function closeSettings() {
   showSettings.value = false
 }
 
+// 刷新聊天数据
+async function refreshChat() {
+  await fetchChatDetail()
+  // // 重置分页参数
+  // chatRecordsParams.value.page = 1
+  // await fetchChatRecords()
+}
+
 // 初始化
 onMounted(async () => {
   getModelId()
   await fetchChatDetail()
+  await fetchChatRecords()
   scroolBottom()
 })
 onBeforeRouteLeave(() => {
@@ -435,16 +451,16 @@ async function saveEditedMessage() {
 
   try {
     // 更新本地状态
-    const messageIndex = chatDetail.value.record_list.findIndex(
+    const messageIndex = chatRecords.value.findIndex(
       msg => msg.chat_record_id === editingMessageId.value,
     )
 
     if (messageIndex !== -1) {
       // 保存原始内容，以便在API调用失败时恢复
-      const originalContent = chatDetail.value.record_list[messageIndex].content
+      const originalContent = chatRecords.value[messageIndex].content
 
       // 更新UI
-      chatDetail.value.record_list[messageIndex].content = editingContent.value.trim()
+      chatRecords.value[messageIndex].content = editingContent.value.trim()
 
       // 调用API更新数据库
       try {
@@ -454,6 +470,8 @@ async function saveEditedMessage() {
         await api.updateChatRecord({
           chat_record_id: editingMessageId.value,
           content: editingContent.value.trim(),
+          is_blocked_by_user: chatRecords.value[messageIndex].is_blocked_by_user,
+          is_blocking_user: chatRecords.value[messageIndex].is_blocking_user,
         })
 
         // 模拟API调用成功
@@ -464,7 +482,7 @@ async function saveEditedMessage() {
       catch (apiError) {
         console.error('API调用失败', apiError)
         // 恢复原始内容
-        chatDetail.value.record_list[messageIndex].content = originalContent
+        chatRecords.value[messageIndex].content = originalContent
         showFailToast(t('clochat.chat.editFailed'))
       }
     }
@@ -532,13 +550,13 @@ function deleteMessages() {
       if (isMultiSelectMode.value) {
         // 多选模式下删除多条消息
         const deletePromises = Array.from(selectedMessages.value).map(messageId =>
-          deleteChatRecord(messageId),
+          api.deleteChatRecord(messageId),
         )
 
         await Promise.all(deletePromises)
 
         // 更新UI
-        chatDetail.value.record_list = chatDetail.value.record_list.filter(
+        chatRecords.value = chatRecords.value.filter(
           item => !selectedMessages.value.has(item.chat_record_id),
         )
 
@@ -547,10 +565,10 @@ function deleteMessages() {
       }
       else {
         // 单选模式下删除单条消息
-        await deleteChatRecord(selectedMessageId.value)
+        await api.deleteChatRecord(selectedMessageId.value)
 
         // 更新UI
-        chatDetail.value.record_list = chatDetail.value.record_list.filter(
+        chatRecords.value = chatRecords.value.filter(
           item => item.chat_record_id !== selectedMessageId.value,
         )
 
@@ -592,6 +610,7 @@ watch(() => route.params.id, async (newId) => {
       pageSize: 10,
     }
     await fetchChatDetail()
+    await fetchChatRecords()
   }
   scroolBottom()
 }, { immediate: false }) // 设置immediate为false，避免初始化时重复调用
@@ -608,7 +627,7 @@ watch(() => route.params.id, async (newId) => {
     <!-- 聊天设置组件 -->
     <ChatSettings
       :visible="showSettings" :chat-detail="chatDetail" @close="closeSettings"
-      @refresh="fetchChatDetail"
+      @refresh="refreshChat"
     />
     <!-- 聊天记录列表 -->
     <InfiniteScrollList
@@ -671,6 +690,9 @@ watch(() => route.params.id, async (newId) => {
             <div class="text-xs text-[#a6a6a699] mr-2 self-center">
               {{ chat.create_time }}
             </div>
+            <div v-if="chat.is_blocking_user" class="text-lg text-red ml-2 self-center">
+              <div class="i-carbon:warning-filled" />
+            </div>
           </div>
           <div v-else class="flex flex-row w-full relative">
             <van-image width="2.5rem" height="2.5rem" :src="chatDetail?.friend_avatar" round />
@@ -709,6 +731,9 @@ watch(() => route.params.id, async (newId) => {
               :class="{ 'bg-[#E0E4EE]': isMultiSelectMode && selectedMessages.has(chat.chat_record_id) }"
             >
               {{ chat.content }}
+            </div>
+            <div v-if="chat.is_blocked_by_user" class="text-lg text-red ml-2 self-center">
+              <div class="i-carbon:warning-filled" />
             </div>
             <div class="text-xs text-[#a6a6a699] ml-2 self-center">
               {{ chat.create_time }}

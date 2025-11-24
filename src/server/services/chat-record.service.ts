@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db'
 import type { ChatRecordModel } from '../models/chat-record.model'
 import { chatService } from './chat.service'
+import { friendService } from './friend.service'
 
 // 默认每页记录数
 const PAGE_SIZE = 20
@@ -80,6 +81,8 @@ export class ChatRecordService {
   async addChatRecord(params: Api.Clochat.AddRecordParams): Promise<ChatRecordModel> {
     const recordId = uuidv4()
     const now = Date.now()
+    const chat = await chatService.getChatById(params.chat_id)
+    const friend = await friendService.getFriendById(chat.friend_id)
     const newRecord: ChatRecordModel = {
       chat_record_id: recordId,
       create_time: now,
@@ -87,6 +90,8 @@ export class ChatRecordService {
       content: params.content,
       type: params.type,
       is_read: params.is_read !== undefined ? params.is_read : true,
+      is_blocking_user: friend.is_blocking_user ?? false,
+      is_blocked_by_user: friend.is_blocked_by_user ?? false,
     }
     await db.chatRecords.add(newRecord)
 

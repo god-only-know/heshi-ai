@@ -35,6 +35,54 @@ export class FriendService {
   async deleteFriend(friendId: string): Promise<void> {
     await db.friends.delete(friendId)
   }
+
+  // 拉黑好友（用户拉黑好友）
+  async blockFriend(friendId: string): Promise<FriendModel | undefined> {
+    const friend = await this.getFriendById(friendId)
+    if (!friend)
+      return undefined
+
+    friend.is_blocked_by_user = true
+    await db.friends.update(friendId, { is_blocked_by_user: true })
+
+    return friend
+  }
+
+  // 取消拉黑好友（用户取消拉黑好友）
+  async unblockFriend(friendId: string): Promise<FriendModel | undefined> {
+    const friend = await this.getFriendById(friendId)
+    if (!friend)
+      return undefined
+
+    friend.is_blocked_by_user = false
+    await db.friends.update(friendId, { is_blocked_by_user: false })
+
+    return friend
+  }
+
+  // 被好友拉黑（好友拉黑用户）
+  async blockedByFriend(friendId: string): Promise<FriendModel | undefined> {
+    const friend = await this.getFriendById(friendId)
+    if (!friend)
+      return undefined
+
+    friend.is_blocking_user = true
+    await db.friends.update(friendId, { is_blocking_user: true })
+
+    return friend
+  }
+
+  // 取消被好友拉黑（好友取消拉黑用户）
+  async unblockedByFriend(friendId: string): Promise<FriendModel | undefined> {
+    const friend = await this.getFriendById(friendId)
+    if (!friend)
+      return undefined
+
+    friend.is_blocking_user = false
+    await db.friends.update(friendId, { is_blocking_user: false })
+
+    return friend
+  }
 }
 
 // 导出单例

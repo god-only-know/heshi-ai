@@ -12,6 +12,14 @@ function getFriendDetail(data: { friendId: string }) {
 function deleteFriend(data: { friendId: string }) {
   return friendService.deleteFriend(data.friendId)
 }
+/** 拉黑好友 */
+function blockFriend(data: { friendId: string }) {
+  return friendService.blockFriend(data.friendId)
+}
+/** 取消拉黑好友 */
+function unblockFriend(data: { friendId: string }) {
+  return friendService.unblockFriend(data.friendId)
+}
 
 // 聊天相关API
 /** 获取所有聊天 */
@@ -140,6 +148,16 @@ export default [
     method: 'POST',
     path: '/api/clochat/friends/delete',
     handler: deleteFriend,
+  },
+  {
+    method: 'POST',
+    path: '/api/clochat/friends/block',
+    handler: blockFriend,
+  },
+  {
+    method: 'POST',
+    path: '/api/clochat/friends/unblock',
+    handler: unblockFriend,
   },
 
   // 聊天会话相关

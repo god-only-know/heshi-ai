@@ -21,6 +21,16 @@ export function deleteFriend(friendId: string) {
   return request.post('/clochat/friends/delete', { friendId })
 }
 
+// 新增：拉黑好友
+export function blockFriend(friendId: string) {
+  return request.post('/clochat/friends/block', { friendId })
+}
+
+// 新增：取消拉黑好友
+export function unblockFriend(friendId: string) {
+  return request.post('/clochat/friends/unblock', { friendId })
+}
+
 // 聊天相关API
 export function sendMessage(data: Api.Clochat.SendMessageParams) {
   return request.post('/llm-model/send-message', data)

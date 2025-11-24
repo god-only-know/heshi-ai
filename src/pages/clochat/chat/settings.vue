@@ -15,7 +15,6 @@ const chatDetail = ref<Api.Clochat.getChatDetailResult>({
   friend_id: '',
   friend_name: '',
   friend_avatar: '',
-  record_list: [],
 })
 const loading = ref(false)
 

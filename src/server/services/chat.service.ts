@@ -36,17 +36,9 @@ export class ChatService {
       friendData = await db.friends.get(chatData.friend_id)
     }
 
-    const chatRecords = (await db.chatRecords
-      .where('chat_id')
-      .equals(chatId)
-      .toArray()).toSorted(
-      (a, b) => a.create_time - b.create_time,
-    )
-
     return {
       ...chatData,
       ...friendData,
-      record_list: chatRecords,
     }
   }
 

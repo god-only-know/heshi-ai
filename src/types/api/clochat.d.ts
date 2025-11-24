@@ -16,14 +16,8 @@ declare namespace Api {
       friend_name: string
       friend_avatar: string
       friend_introduce?: string
-      record_list: {
-        chat_record_id: string
-        create_time?: number
-        chat_id?: string
-        content: string
-        type: string
-        is_read?: boolean
-      }[]
+      is_blocked_by_user?: boolean // 是否被用户拉黑
+      is_blocking_user?: boolean // 是否拉黑用户
     }
 
     // 获取对话列表返回结果
@@ -36,6 +30,20 @@ declare namespace Api {
       friend_name: string
       friend_avatar: string
       friend_introduce?: string
+      is_blocked_by_user?: boolean // 是否被用户拉黑
+      is_blocking_user?: boolean // 是否拉黑用户
+    }[]
+
+    type getChatRecordListResult = {
+      chat_record_id: string
+      create_time: number
+      last_message?: string
+      last_message_time?: number
+      content: string
+      type: string
+      is_read?: boolean
+      is_blocked_by_user?: boolean // 是否被用户拉黑
+      is_blocking_user?: boolean // 是否拉黑用户
     }[]
     // 添加对话记录参数
     interface AddRecordParams {
@@ -43,6 +51,8 @@ declare namespace Api {
       content: string
       type: 'user' | 'assistant'
       is_read?: boolean
+      is_blocked_by_user?: boolean // 是否被用户拉黑
+      is_blocking_user?: boolean // 是否拉黑用户
     }
 
     // 编辑对话记录参数
@@ -51,6 +61,8 @@ declare namespace Api {
       content?: string
       type?: 'user' | 'assistant'
       is_read?: boolean
+      is_blocked_by_user?: boolean // 是否被用户拉黑
+      is_blocking_user?: boolean // 是否拉黑用户
     }
 
     // 添加对话参数

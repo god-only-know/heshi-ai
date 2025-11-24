@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { showConfirmDialog, showToast } from 'vant'
-import { clearChatHistory, getChatRecords, searchChatRecords } from '@/api/clochat'
+import { blockFriend as blockFriendApi, clearChatHistory, getChatRecords, searchChatRecords, unblockFriend as unblockFriendApi } from '@/api/clochat'
 
 const props = defineProps<{
   visible: boolean
@@ -166,16 +166,15 @@ function exportChat() {
 }
 
 // 拉黑好友
-function blockFriend() {
+function handleBlockFriend() {
   showConfirmDialog({
     title: t('clochat.settings.blockConfirm'),
     message: t('clochat.settings.blockConfirmMessage', { name: props.chatDetail.friend_name }),
   }).then(async () => {
     try {
-      // 这里可以调用拉黑好友的API
-      // 由于目前没有拉黑API，这里只是模拟
+      // 调用拉黑好友的API
+      await blockFriendApi(props.chatDetail.friend_id)
       showToast(t('clochat.settings.blockSuccess'))
-      handleClose()
       emit('refresh')
     }
     catch (error) {
@@ -186,6 +185,32 @@ function blockFriend() {
     // 取消操作
   })
 }
+
+// 取消拉黑好友
+function handleUnblockFriend() {
+  showConfirmDialog({
+    title: t('clochat.settings.unblockConfirm'),
+    message: t('clochat.settings.unblockConfirmMessage', { name: props.chatDetail.friend_name }),
+  }).then(async () => {
+    try {
+      // 调用取消拉黑好友的API
+      await unblockFriendApi(props.chatDetail.friend_id)
+      showToast(t('clochat.settings.unblockSuccess'))
+      emit('refresh')
+    }
+    catch (error) {
+      console.error(error)
+      showToast(t('clochat.settings.operationFailed'))
+    }
+  }).catch(() => {
+    // 取消操作
+  })
+}
+
+// 判断好友是否被拉黑
+const isBlocked = computed(() => {
+  return props.chatDetail.is_blocked_by_user || false
+})
 </script>
 
 <template>
@@ -239,8 +264,11 @@ function blockFriend() {
           <van-button type="primary" @click="viewChatHistory">
             {{ t('clochat.settings.viewHistory') }}
           </van-button>
-          <van-button type="danger" @click="blockFriend">
-            {{ t('clochat.settings.block') }}
+          <van-button
+            :type="isBlocked ? 'default' : 'danger'"
+            @click="isBlocked ? handleUnblockFriend() : handleBlockFriend()"
+          >
+            {{ isBlocked ? t('clochat.settings.unblock') : t('clochat.settings.block') }}
           </van-button>
           <van-button type="warning" @click="handleClearChatHistory">
             {{ t('clochat.settings.clearHistory') }}
