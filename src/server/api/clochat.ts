@@ -1,6 +1,10 @@
 import { chatRecordService, chatService, friendService } from '@/server'
 // 好友相关API
 /** 获取好友列表 */
+function addFriend(data: Api.Clochat.AddFriendParams) {
+  return friendService.addFriend(data)
+}
+/** 获取好友列表 */
 function getFriends() {
   return friendService.getAllFriends()
 }
@@ -134,6 +138,11 @@ export default [
   },
 
   // 好友相关
+  {
+    method: 'POST',
+    path: '/api/clochat/friends/create',
+    handler: addFriend,
+  },
   {
     method: 'POST',
     path: '/api/clochat/friends/list',

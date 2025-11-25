@@ -9,8 +9,8 @@ export function getFriendById(friendId: string) {
   return request.post('/clochat/friends/detail', { friendId })
 }
 
-export function addFriend(data: Omit<Clochat.FriendItem, 'friend_id'>) {
-  return request.post('/clochat/friends', data)
+export function addFriend(data: Api.Clochat.AddFriendParams) {
+  return request.post('/clochat/friends/create', data)
 }
 
 export function updateFriend(data: Clochat.FriendItem) {

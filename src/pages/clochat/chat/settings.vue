@@ -21,7 +21,7 @@ const loading = ref(false)
 // 获取聊天详情
 async function fetchChatDetail() {
   if (!chatId.value) {
-    showToast(t('clochat.notify.noChat'))
+    showToast(t('clochat.chat.noChat'))
     return handleBack()
   }
 

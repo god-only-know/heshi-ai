@@ -15,11 +15,13 @@ export class FriendService {
   }
 
   // 添加好友
-  async addFriend(friend: Omit<FriendModel, 'friend_id'>): Promise<FriendModel> {
+  async addFriend(friend: Api.Clochat.AddFriendParams): Promise<FriendModel> {
     const friendId = uuidv4()
     const newFriend = {
       ...friend,
       friend_id: friendId,
+      is_blocked_by_user: false,
+      is_blocking_user: false,
     }
     await db.friends.add(newFriend)
     return newFriend

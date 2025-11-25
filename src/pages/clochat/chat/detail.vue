@@ -95,7 +95,7 @@ const chatMessageList = computed(() => {
 async function fetchChatDetail() {
   const chatId = route.params.id as string
   if (!chatId) {
-    return showFailToast(t('clochat.notify.noChat'))
+    return showFailToast(t('clochat.chat.noChat'))
   }
 
   try {
@@ -188,13 +188,13 @@ async function getModelId() {
 // 添加消息到缓冲区
 async function addMessageToBuffer() {
   if (loading.value) {
-    showLoadingToast(t('clochat.notify.sending'))
+    showLoadingToast(t('clochat.chat.sending'))
     return
   }
 
   const user_message = inputText.value.trim()
   if (user_message === '') {
-    showFailToast(t('clochat.notify.noMessage'))
+    showFailToast(t('clochat.chat.noMessage'))
     return
   }
 
@@ -235,7 +235,7 @@ async function addMessageToBuffer() {
   }
   catch (err) {
     console.error(err)
-    showFailToast(t('clochat.notify.sendMessageFailed'))
+    showFailToast(t('clochat.chat.sendMessageFailed'))
   }
 }
 
@@ -275,7 +275,7 @@ async function sendBufferedMessages() {
   }
   catch (err) {
     console.error(err)
-    showFailToast(t('clochat.notify.sendMessageFailed'))
+    showFailToast(t('clochat.chat.sendMessageFailed'))
   }
   finally {
     loading.value = false

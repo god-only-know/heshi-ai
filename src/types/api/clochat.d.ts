@@ -82,5 +82,12 @@ declare namespace Api {
     interface MarkMessagesAsReadParams {
       message_ids: string[]
     }
+
+    // 新增好友
+    interface AddFriendParams {
+      friend_name: string
+      friend_avatar: string
+      friend_introduce: string
+    }
   }
 }

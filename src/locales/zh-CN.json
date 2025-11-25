@@ -158,11 +158,26 @@
       "my": "我的"
     },
     "notify": {
-      "noChat": "无对话",
-      "createChatFailed": "创建聊天失败",
-      "sendMessageFailed": "发送消息失败",
-      "sending": "消息发送中...",
-      "noMessage": "请输入消息内容"
+
+    },
+    "friend": {
+      "createRole": "创建角色",
+      "avatar": "头像",
+      "supportFormats": "支持上传png/jpg/gif/webp等格式",
+      "name": "名称",
+      "enterName": "请输入角色名称",
+      "description": "角色描述",
+      "enterDescription": "请输入角色描述",
+      "worldBook": "关联世界书",
+      "selectWorldBook": "请选择",
+      "cancel": "取消",
+      "confirm": "确认",
+      "cropAvatar": "裁剪头像",
+      "createSuccess": "创建角色成功",
+      "createFailed": "创建角色失败",
+      "cropSuccess": "头像裁剪成功",
+      "createChatRecordFailed": "创建聊天失败",
+      "invalidImageFormat": "请选择有效的图片文件（png/jpg/gif/webp）"
     },
     "chat": {
       "inputPlaceholder": "输入消息...",
@@ -188,7 +203,11 @@
       "save": "保存",
       "favoriteSuccess": "已收藏消息",
       "favoriteMultipleSuccess": "已收藏 {count} 条消息",
-      "today": "今天"
+      "today": "今天",
+      "noChat": "无对话",
+      "sendMessageFailed": "发送消息失败",
+      "sending": "消息发送中...",
+      "noMessage": "请输入消息内容"
     },
     "settings": {
       "title": "聊天设置",
