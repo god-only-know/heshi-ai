@@ -1,22 +1,23 @@
 import clochatApis from './clochat'
 import apiSettingApis from './api-setting'
 import llmModel from './llm-model'
+import userApis from './user'
 import type { InternalAxiosRequestConfig } from 'axios'
 import { isEmpty } from 'lodash-es'
 
 // 构建请求处理函数
-const apiMap = [...clochatApis, ...apiSettingApis, ...llmModel].reduce((acc, api) => {
+const apiMap = [...clochatApis, ...apiSettingApis, ...llmModel, ...userApis].reduce((acc, api) => {
   const key = `${api.method} ${api.path}`
   acc[key] = api.handler
   return acc
 }, {})
 // 构建响应数据
 function builder(data: unknown, message = 'success', code = 0) {
-  // 响应体结构
+  // 响应体结构 - 使用data字段以匹配前端store的期望
   const responseBody = {
     message: '',
     timestamp: 0,
-    result: data,
+    data, // 使用data而不是result
     code: 0,
   }
 

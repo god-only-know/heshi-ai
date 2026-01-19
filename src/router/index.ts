@@ -31,6 +31,18 @@ router.beforeEach(async (to: EnhancedRouteLocation) => {
   // Set page title
   setPageTitle(String(to?.name))
 
+  // 检查是否需要登录
+  const requiresAuth = to.path === '/' || to.name === 'home'
+
+  if (requiresAuth && !isLogin()) {
+    // 未登录，重定向到登录页
+    NProgress.done()
+    return {
+      name: 'Login',
+      query: { redirect: to.fullPath },
+    }
+  }
+
   if (isLogin() && !userStore.userInfo?.uid)
     await userStore.info()
 })

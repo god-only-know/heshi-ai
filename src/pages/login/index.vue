@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import type { RouteMap } from 'vue-router'
 import { useUserStore } from '@/stores'
+import { encryptWithRSA } from '@/utils/crypto'
 
 import logo from '~/images/logo.svg'
 import logoDark from '~/images/logo-dark.svg'
@@ -38,10 +39,15 @@ const rules = reactive({
 async function login(values: any) {
   try {
     loading.value = true
-    await userStore.login({ ...postData, ...values })
+    // 使用RSA加密密码
+    const encryptedPassword = encryptWithRSA(postData.password)
+    await userStore.login({
+      email: postData.email,
+      password: encryptedPassword,
+    })
     const { redirect, ...othersQuery } = router.currentRoute.value.query
     router.push({
-      name: (redirect as keyof RouteMap) || 'Home',
+      name: (redirect as keyof RouteMap) || 'home',
       query: {
         ...othersQuery,
       },
