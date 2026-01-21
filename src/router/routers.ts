@@ -77,18 +77,13 @@ const routers: RouteRecordRaw[] = [
     component: () => import('@/pages/login/index.vue'),
   },
   {
-    path: '/login-test',
-    name: 'LoginTest',
-    component: () => import('@/pages/login-test/index.vue'),
-  },
-  {
     path: '/forgot-password',
     component: () => import('@/pages/forgot-password/index.vue'),
   },
-  {
-    path: '/mock',
-    component: () => import('@/pages/mock/index.vue'),
-  },
+  // {
+  //   path: '/mock',
+  //   component: () => import('@/pages/mock/index.vue'),
+  // },
   {
     path: '/register',
     component: () => import('@/pages/register/index.vue'),

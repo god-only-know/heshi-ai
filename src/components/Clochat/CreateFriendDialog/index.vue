@@ -126,7 +126,7 @@ async function handleCreateFriend() {
       friend_introduce: friendForm.value.friendIntroduce || '',
     })
 
-    if (response?.result) {
+    if (response?.data) {
       showSuccessToast(t('clochat.friend.createSuccess'))
       handleCloseDialog()
       // 通知父组件创建成功

@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import type { RouteMap } from 'vue-router'
 import { useUserStore } from '@/stores'
 import { encryptWithRSA } from '@/utils/crypto'
-
-import logo from '~/images/logo.svg'
-import logoDark from '~/images/logo-dark.svg'
-import vw from '@/utils/inline-px-to-vw'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -36,7 +31,7 @@ const rules = reactive({
   ],
 })
 
-async function login(values: any) {
+async function login() {
   try {
     loading.value = true
     // 使用RSA加密密码
@@ -46,8 +41,9 @@ async function login(values: any) {
       password: encryptedPassword,
     })
     const { redirect, ...othersQuery } = router.currentRoute.value.query
+    console.log('redirect:', redirect)
     router.push({
-      name: (redirect as keyof RouteMap) || 'home',
+      path: redirect as string,
       query: {
         ...othersQuery,
       },
@@ -60,9 +56,11 @@ async function login(values: any) {
 </script>
 
 <template>
-  <div class="m-x-a text-center w-7xl">
-    <div class="mb-32 mt-20">
-      <van-image :src="dark ? logoDark : logo" class="h-120 w-120" alt="brand logo" />
+  <div class="px-4 text-center w-full">
+    <div class="mb-12 mt-12">
+      <h1 class="text-2xl font-bold">
+        {{ $t('login.login') }}
+      </h1>
     </div>
 
     <van-form :model="postData" :rules="rules" validate-trigger="onSubmit" @submit="login">
@@ -97,7 +95,7 @@ async function login(values: any) {
       </div>
     </van-form>
 
-    <GhostButton block to="register" :style="{ 'margin-top': vw(18) }">
+    <GhostButton block to="register" class="mt-18">
       {{ $t('login.signUp') }}
     </GhostButton>
 

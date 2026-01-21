@@ -73,6 +73,7 @@
   },
   "login": {
     "login": "登录",
+    "register": "注册",
     "logout": "退出登录",
     "email": "邮箱",
     "password": "密码",
@@ -157,9 +158,7 @@
       "activity": "动态",
       "my": "我的"
     },
-    "notify": {
-
-    },
+    "notify": {},
     "friend": {
       "createRole": "创建角色",
       "avatar": "头像",

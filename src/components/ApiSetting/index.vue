@@ -27,8 +27,8 @@ const apiForm = ref<Api.ApiSetting.UpdateApiSettingParams>({ ...defaultApi, sett
 async function fetchApiSettings() {
   try {
     const res = await api.getApiSettings()
-    if (res?.result) {
-      settingList.value = res.result
+    if (res?.data) {
+      settingList.value = res.data
       if (settingList.value.length > 0) {
         apiForm.value = { ...settingList.value[0] }
       }
@@ -80,7 +80,7 @@ async function addSetting() {
     apiForm.value.setting_id = v4()
     const { setting_id, ...rest } = apiForm.value
     const res = await api.addApiSetting(rest)
-    if (res?.result) {
+    if (res?.data) {
       await fetchApiSettings()
       showSuccessToast(t('apiSetting.saveSuccess'))
     }
@@ -94,7 +94,7 @@ async function saveSetting() {
   try {
     await formRef.value.validate()
     const res = await api.updateApiSetting(apiForm.value)
-    if (res?.result) {
+    if (res?.data) {
       await fetchApiSettings()
       showSuccessToast(t('apiSetting.saveSuccess'))
     }
@@ -130,7 +130,7 @@ async function testModels() {
       },
     ],
   })
-  if (res?.result?.choices?.[0]?.message) {
+  if (res?.data?.choices?.[0]?.message) {
     showSuccessToast(t('apiSetting.testSuccess'))
   }
   else {
@@ -143,8 +143,8 @@ async function connectApi() {
     api_key: apiForm.value.api_key,
     url: apiForm.value.api_url,
   })
-  if (res?.result) {
-    modleList.value = res.result || []
+  if (res?.data) {
+    modleList.value = res.data || []
     showSuccessToast(t('apiSetting.connectSuccess'))
   }
   else {

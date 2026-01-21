@@ -28,7 +28,7 @@ async function fetchChatDetail() {
   try {
     loading.value = true
     const response = await api.getChatDetail(chatId.value)
-    chatDetail.value = response?.result
+    chatDetail.value = response?.data
   }
   catch (err) {
     console.error(err)

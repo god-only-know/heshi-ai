@@ -3,7 +3,6 @@ import { useRouter } from 'vue-router'
 import type { FieldRule } from 'vant'
 import { showNotify } from 'vant'
 import { useUserStore } from '@/stores'
-import vw from '@/utils/inline-px-to-vw'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -70,14 +69,19 @@ async function getCode() {
   isGettingCode.value = true
   const res = await userStore.getCode()
   if (res.code === 0)
-    showNotify({ type: 'success', message: `${t('register.sendCodeSuccess')}: ${res.result}` })
+    showNotify({ type: 'success', message: `${t('register.sendCodeSuccess')}: ${res.data}` })
 
   isGettingCode.value = false
 }
 </script>
 
 <template>
-  <div class="m-x-a text-center w-7xl">
+  <div class="p-4 text-center w-full">
+    <div class="mb-12 mt-12">
+      <h1 class="text-2xl font-bold">
+        {{ $t('login.register') }}
+      </h1>
+    </div>
     <van-form :model="postData" :rules="rules" validate-trigger="onSubmit" @submit="register">
       <div class="rounded-3xl overflow-hidden">
         <van-field
@@ -144,7 +148,7 @@ async function getCode() {
       </div>
     </van-form>
 
-    <GhostButton to="login" block :style="{ 'margin-top': vw(8) }">
+    <GhostButton to="login" block class="mt-18">
       {{ $t('register.backToLogin') }}
     </GhostButton>
   </div>

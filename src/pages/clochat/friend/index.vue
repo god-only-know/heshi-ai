@@ -59,7 +59,7 @@ async function fetchFriendList() {
   try {
     loading.value = true
     const response = await api.getFriends()
-    friendList.value = response?.result || []
+    friendList.value = response?.data || []
   }
   catch (err) {
     console.error('获取好友列表失败', err)
@@ -76,14 +76,14 @@ async function handleSendChat(friend_id: string) {
 
     // 先查询是否已有聊天
     const chatResponse = await api.getChatByFriendId(friend_id)
-    let chatItem = chatResponse?.result
+    let chatItem = chatResponse?.data
 
     // 如果没有聊天，则创建新聊天
     if (!chatItem) {
       const newChatResponse = await api.addChat({
         friend_id,
       })
-      chatItem = newChatResponse?.result
+      chatItem = newChatResponse?.data
     }
     if (chatItem) {
       router.push({

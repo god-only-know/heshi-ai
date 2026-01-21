@@ -15,7 +15,7 @@ async function fetchChatList() {
     loading.value = true
     chatList.value = []
     const response = await api.getChats()
-    chatList.value = response?.result || []
+    chatList.value = response?.data || []
   }
   catch (err) {
     console.error('获取聊天列表失败', err)

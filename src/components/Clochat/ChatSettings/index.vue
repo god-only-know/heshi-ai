@@ -63,7 +63,7 @@ async function fetchChatRecords() {
   try {
     loading.value = true
     const response = await getChatRecords(props.chatDetail.chat_id)
-    chatRecords.value = response?.result || []
+    chatRecords.value = response?.data || []
   }
   catch (error) {
     console.error('获取聊天记录失败', error)
@@ -85,7 +85,7 @@ async function handleSearch() {
     loading.value = true
     isSearching.value = true
     const response = await searchChatRecords(props.chatDetail.chat_id, searchKeyword.value)
-    searchResults.value = response?.result || []
+    searchResults.value = response?.data || []
   }
   catch (error) {
     console.error('搜索聊天记录失败', error)

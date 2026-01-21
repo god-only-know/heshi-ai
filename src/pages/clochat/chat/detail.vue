@@ -101,7 +101,7 @@ async function fetchChatDetail() {
   try {
     loading.value = true
     const response = await api.getChatDetail(chatId)
-    chatDetail.value = response?.result
+    chatDetail.value = response?.data
 
     // 设置聊天ID
     chatRecordsParams.value.chatId = chatId
@@ -122,8 +122,8 @@ async function fetchChatRecords() {
 
   try {
     const response = await api.getChatRecordsPaginated(chatRecordsParams.value)
-    if (response?.result) {
-      const { records, hasMore } = response.result
+    if (response?.data) {
+      const { records, hasMore } = response.data
 
       // 如果是第一页，直接替换记录列表
       if (chatRecordsParams.value.page === 1) {
@@ -157,8 +157,8 @@ async function loadMoreHistory(direction = 'up') {
       chatRecordsParams.value.page = (chatRecordsParams.value.page || 1) + 1
 
       const response = await api.getChatRecordsPaginated(chatRecordsParams.value)
-      if (response?.result) {
-        const { records, hasMore } = response.result
+      if (response?.data) {
+        const { records, hasMore } = response.data
 
         // 将新加载的记录添加到列表前面
         chatRecords.value = [...records, ...chatRecords.value]
@@ -213,15 +213,15 @@ async function addMessageToBuffer() {
     })
 
     // 将消息ID添加到缓冲区
-    if (response?.result) {
-      bufferMessageIds.value.push(response.result.chat_record_id)
+    if (response?.data) {
+      bufferMessageIds.value.push(response.data.chat_record_id)
 
       // 添加到UI显示
       chatRecords.value.push({
-        chat_record_id: response.result.chat_record_id,
+        chat_record_id: response.data.chat_record_id,
         content: user_message,
         type: 'user',
-        create_time: response.result.create_time,
+        create_time: response.data.create_time,
         is_blocked_by_user: chatDetail.value.is_blocked_by_user,
         is_blocking_user: chatDetail.value.is_blocking_user,
       })
@@ -262,10 +262,10 @@ async function sendBufferedMessages() {
 
     // 清空缓冲区
     bufferMessageIds.value = []
-    if (response?.result) {
+    if (response?.data) {
       // 添加AI回复，并设置拉黑状态
       const aiResponse = {
-        ...response.result,
+        ...response.data,
         is_blocked_by_user: chatDetail.value.is_blocked_by_user,
         is_blocking_user: chatDetail.value.is_blocking_user,
       }

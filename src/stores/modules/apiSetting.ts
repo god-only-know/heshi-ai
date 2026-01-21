@@ -20,7 +20,7 @@ const useApiSettingStore = defineStore('apiSetting', () => {
   // 获取模型设置
   async function getModelSetting() {
     const res = await api.getModelSetting()
-    const { main_chat_setting, summary_setting, dynamic_setting, apply_to_all } = res?.result
+    const { main_chat_setting, summary_setting, dynamic_setting, apply_to_all } = res?.data
     modelForm.value = {
       mainChatModel: main_chat_setting,
       summaryModel: summary_setting,
@@ -32,8 +32,8 @@ const useApiSettingStore = defineStore('apiSetting', () => {
   async function updateModelSetting(data: Api.ApiSetting.UpdateModelSettingParams) {
     try {
       const res = await api.updateModelSetting(data)
-      if (res?.result) {
-        return res.result
+      if (res?.data) {
+        return res.data
       }
     }
     catch (error) {

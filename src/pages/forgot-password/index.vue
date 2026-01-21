@@ -66,7 +66,7 @@ async function getCode() {
   isGettingCode.value = true
   const res = await userStore.getCode()
   if (res.code === 0)
-    showNotify({ type: 'success', message: `${t('forgotPassword.sendCodeSuccess')}: ${res.result}` })
+    showNotify({ type: 'success', message: `${t('forgotPassword.sendCodeSuccess')}: ${res.data}` })
 
   isGettingCode.value = false
 }

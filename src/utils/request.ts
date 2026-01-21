@@ -7,7 +7,7 @@ import { createLocalRequestHandler } from '@/server/api'
 declare module 'axios' {
   export interface AxiosResponse<T = any> {
     code: number
-    result: T
+    data: T
     message: string
     timestamp: number
   }
@@ -30,7 +30,7 @@ const request = axios.create({
 
 export type RequestError = AxiosError<{
   message?: string
-  result?: any
+  data?: any
   errorMessage?: string
 }>
 
@@ -46,7 +46,7 @@ function errorHandler(error: RequestError): Promise<any> {
       })
     }
     // 401 未登录/未授权
-    if (status === 401 && data.result && data.result.isLogin) {
+    if (status === 401 && data.data && data.data.isLogin) {
       showNotify({
         type: 'danger',
         message: 'Authorization verification failed',

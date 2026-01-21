@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
 import { userDb } from '../models/user.model'
-import type { User } from '../models/user.model'
 import { decryptWithRSA } from '@/utils/crypto'
 
 export class UserService {
@@ -16,8 +15,8 @@ export class UserService {
       try {
         password = decryptWithRSA(encryptedPassword)
       }
-      catch (decryptError) {
-        console.log('解密失败，尝试使用明文密码')
+      catch (error) {
+        console.error(error)
         password = encryptedPassword
       }
 
@@ -143,6 +142,7 @@ export class UserService {
       return true
     }
     catch (error) {
+      console.error(error)
       throw new Error('退出登录失败')
     }
   }
