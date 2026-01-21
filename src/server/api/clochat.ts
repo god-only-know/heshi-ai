@@ -98,108 +98,108 @@ export default [
   // 聊天记录相关
   {
     method: 'POST',
-    path: '/api/clochat/chat-records/mark-as-read',
+    path: '/api/chat-records/mark-as-read',
     handler: markMessagesAsRead,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chat-records/unread',
+    path: '/api/chat-records/unread',
     handler: getUnreadMessages,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chat-records',
+    path: '/api/chat-records',
     handler: addChatRecord,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chat-records/update',
+    path: '/api/chat-records/update',
     handler: updateChatRecord,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chat-records/delete',
+    path: '/api/chat-records/delete',
     handler: deleteChatRecord,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chat-records/clear',
+    path: '/api/chat-records/clear',
     handler: clearChatHistory,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chat-records/list',
+    path: '/api/chat-records/list',
     handler: getChatRecords,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chat-records/paginated',
+    path: '/api/chat-records/paginated',
     handler: getChatRecordsPaginated,
   },
 
   // 好友相关
   {
     method: 'POST',
-    path: '/api/clochat/friends/create',
+    path: '/api/friends/create',
     handler: addFriend,
   },
   {
     method: 'POST',
-    path: '/api/clochat/friends/list',
+    path: '/api/friends/list',
     handler: getFriends,
   },
   {
     method: 'POST',
-    path: '/api/clochat/friends/detail',
+    path: '/api/friends/detail',
     handler: getFriendDetail,
   },
   {
     method: 'POST',
-    path: '/api/clochat/friends/delete',
+    path: '/api/friends/delete',
     handler: deleteFriend,
   },
   {
     method: 'POST',
-    path: '/api/clochat/friends/block',
+    path: '/api/friends/block',
     handler: blockFriend,
   },
   {
     method: 'POST',
-    path: '/api/clochat/friends/unblock',
+    path: '/api/friends/unblock',
     handler: unblockFriend,
   },
 
   // 聊天会话相关
   {
     method: 'POST',
-    path: '/api/clochat/chats/list',
+    path: '/api/chat/list',
     handler: getChats,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chats/detail',
+    path: '/api/chat/detail',
     handler: getChatDetail,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chats/friend',
+    path: '/api/chat/friend',
     handler: getChatByFriendId,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chats',
+    path: '/api/chats',
     handler: addChat,
   },
   {
     method: 'POST',
-    path: '/api/clochat/chats/delete',
+    path: '/api/chat/delete',
     handler: deleteChat,
   },
 
   // 搜索相关（新转换部分）
   {
     method: 'POST',
-    path: '/api/clochat/chat-records/search',
+    path: '/api/chat-records/search',
     handler: searchChatRecords,
   },
 

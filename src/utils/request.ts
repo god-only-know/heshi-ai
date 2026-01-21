@@ -2,7 +2,6 @@ import type { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { showNotify } from 'vant'
 import { STORAGE_TOKEN_KEY } from '@/stores/mutation-type'
-import { createLocalRequestHandler } from '@/server/api'
 
 declare module 'axios' {
   export interface AxiosResponse<T = any> {
@@ -17,9 +16,6 @@ declare module 'axios' {
 // 需要注意的是，请尽量保证使用中横线`-` 来作为分隔符，
 // 避免被 nginx 等负载均衡器丢弃了自定义的请求头
 export const REQUEST_TOKEN_KEY = 'Access-Token'
-
-// 是否使用本地模式（不发送实际请求，而是调用本地API）
-const useLocalMode = true // 可以通过环境变量或配置文件控制
 
 // 创建 axios 实例
 const request = axios.create({
@@ -59,12 +55,7 @@ function errorHandler(error: RequestError): Promise<any> {
 }
 
 // 请求拦截器
-async function requestHandler(config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> {
-  // 如果使用本地模式，则不发送实际请求，而是调用本地API
-  if (useLocalMode) {
-    return await createLocalRequestHandler(config)
-  }
-
+function requestHandler(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
   const savedToken = localStorage.getItem(STORAGE_TOKEN_KEY)
   // 如果 token 存在
   // 让每个请求携带自定义 token, 请根据实际情况修改

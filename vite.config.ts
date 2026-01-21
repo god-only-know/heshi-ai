@@ -18,11 +18,9 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'http://localhost:3000', // 指向本地服务器
-          ws: false,
+          target: 'http://localhost:8080', // 指向Go服务器
+          ws: true, // 支持WebSocket
           changeOrigin: true,
-          // 不要重写路径，因为我们的mock服务需要完整的/api路径
-          // rewrite: path => path.replace(/^\/api/, ''),
         },
       },
     },
