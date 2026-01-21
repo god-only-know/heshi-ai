@@ -11,7 +11,7 @@ export interface LoginRes {
 
 export interface UserState {
   uid?: number
-  name?: string
+  nickname?: string
   avatar?: string
 }
 

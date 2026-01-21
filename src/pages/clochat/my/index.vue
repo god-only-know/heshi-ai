@@ -24,7 +24,7 @@ function login() {
         </template>
 
         <template #value>
-          <span v-if="isLogin">{{ userInfo.name }}</span>
+          <span v-if="isLogin">{{ userInfo.nickname }}</span>
           <span v-else>{{ $t('profile.login') }}</span>
         </template>
       </van-cell>
