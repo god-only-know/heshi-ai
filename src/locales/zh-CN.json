@@ -6,7 +6,6 @@
   "navbar": {
     "404": "404 页面",
     "Home": "主页",
-    "Mock": "Mock",
     "Charts": "图表",
     "UnoCSS": "UnoCSS",
     "Counter": "状态持久化",
@@ -34,12 +33,6 @@
     "login": "登录",
     "settings": "设置",
     "docs": "文档"
-  },
-  "mock": {
-    "fromAsyncData": "来自异步请求的数据",
-    "noData": "暂无数据",
-    "pull": "请求",
-    "reset": "清空"
   },
   "charts": {
     "January": "1月",
@@ -75,8 +68,10 @@
     "login": "登录",
     "register": "注册",
     "logout": "退出登录",
+    "account": "账号",
     "email": "邮箱",
     "password": "密码",
+    "pleaseEnterAccount": "请输入账号",
     "pleaseEnterEmail": "请输入邮箱",
     "pleaseEnterPassword": "请输入密码",
     "signUp": "还没有账号？点击注册",

@@ -32,7 +32,7 @@ router.beforeEach(async (to: EnhancedRouteLocation) => {
   setPageTitle(String(to?.name))
 
   // 检查是否需要登录
-  const requiresAuth = to.path === '/' || to.name === 'home'
+  const requiresAuth = to.path === '/' || to.name === 'home' || to.meta.requiresAuth
 
   if (requiresAuth && !isLogin()) {
     // 未登录，重定向到登录页
@@ -43,8 +43,49 @@ router.beforeEach(async (to: EnhancedRouteLocation) => {
     }
   }
 
-  if (isLogin() && !userStore.userInfo?.uid)
-    await userStore.info()
+  // 如果已登录但没有用户信息，先获取用户信息
+  if (isLogin() && !userStore.userInfo?.uid) {
+    try {
+      await userStore.info()
+    }
+    catch (error) {
+      // 获取用户信息失败（比如token过期），会被request.ts的401拦截器处理
+      NProgress.done()
+      return false
+    }
+  }
+
+  // 检查是否需要管理员权限
+  if (to.meta.requiresAdmin) {
+    if (!isLogin()) {
+      NProgress.done()
+      return {
+        name: 'Login',
+        query: { redirect: to.fullPath },
+      }
+    }
+
+    // 确保已获取用户信息
+    if (!userStore.userInfo?.uid) {
+      try {
+        await userStore.info()
+      }
+      catch (error) {
+        // 获取用户信息失败，会被request.ts的401拦截器处理
+        NProgress.done()
+        return false
+      }
+    }
+
+    // 检查是否是管理员
+    if (userStore.userInfo?.role !== 'admin') {
+      NProgress.done()
+      // 非管理员，重定向到首页并提示
+      return {
+        name: 'home',
+      }
+    }
+  }
 })
 
 router.afterEach(() => {

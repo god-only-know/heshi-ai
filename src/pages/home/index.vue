@@ -8,22 +8,32 @@ import { useEventListener } from '@vant/use'
 import clochatIcon from '@/assets/icons/clochat-icon.svg'
 import worldBookIcon from '@/assets/icons/world-book-icon.svg'
 import defaultAvatar from '@/assets/images/default-avatar.svg'
+import { useUserStore } from '@/stores/modules/user'
 
 const router = useRouter()
 const { t } = useI18n()
+const userStore = useUserStore()
 
-const routes = [
-  // { name: 'Charts', path: '/charts' },
-  // { name: 'Counter', path: '/counter' },
-  // { name: 'ForgotPassword', path: '/forgot-password' },
-  // { name: 'Mock', path: '/mock' },
-  // { name: 'Register', path: '/register' },
-  // { name: 'ScrollCache', path: '/scroll-cache' },
-  // { name: 'Settings', path: '/settings' },
-  // { name: 'UnoCSS', path: '/unocss' },
-  { name: 'Clochat', path: '/clochat', icon: clochatIcon },
-  { name: '世界书', path: '/clochat', icon: worldBookIcon },
-]
+// 计算属性：判断是否是管理员
+const isAdmin = computed(() => userStore.userInfo?.role === 'admin')
+
+const routes = computed(() => {
+  const baseRoutes = [
+    { name: 'Clochat', path: '/clochat', icon: clochatIcon },
+    { name: '世界书', path: '/clochat', icon: worldBookIcon },
+  ]
+
+  // 如果是管理员，添加后台管理入口
+  if (isAdmin.value) {
+    baseRoutes.push({
+      name: '管理后台',
+      path: '/admin',
+      icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTUgM0M4LjM3MyAzIDMgOC4zNzMgMyAxNXM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMlMyMS42MjcgMyAxNSAzem0wIDRjMS42NTcgMCAzIDEuMzQzIDMgM3MtMS4zNDMgMy0zIDMtMy0xLjM0My0zLTMgMS4zNDMtMyAzLTN6bTAgMThjLTMuMzEzIDAtNi4yMS0xLjY4OC03Ljk1LTQuMjU1QzcuNzg1IDE4LjcyNSAxMS4yOCAxNyAxNSAxN3M3LjIxNSAxLjcyNSA3Ljk1IDMuNzQ1QzIxLjIxIDIzLjMxMiAxOC4zMTMgMjUgMTUgMjV6IiBmaWxsPSIjMTY3N2ZmIi8+PC9zdmc+',
+    })
+  }
+
+  return baseRoutes
+})
 
 function go(path: string) {
   router.push({ path }).catch(() => {})

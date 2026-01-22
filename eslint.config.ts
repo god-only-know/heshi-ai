@@ -16,7 +16,8 @@ export default antfu(
       'perfectionist/sort-exports': 'off',
       'perfectionist/sort-named-exports': 'off',
       'no-console': 'warn',
-      'no-unused-vars': 'warn',
+      'no-unused-vars': 'warn', // 修改这里，将 'warn' 改为 'off'
+      'unused-imports/no-unused-vars': 'warn', // 添加这一行来禁用 unused-imports 规则
     },
   },
   {

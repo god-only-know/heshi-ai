@@ -11,7 +11,7 @@ const userStore = useUserStore()
 const loading = ref(false)
 
 const postData = reactive({
-  email: '',
+  account: '',
   code: '',
   password: '',
   confirmPassword: '',
@@ -20,7 +20,7 @@ const postData = reactive({
 const validatorPassword = (val: string) => val === postData.password
 
 const rules = reactive({
-  email: [
+  account: [
     { required: true, message: t('forgotPassword.pleaseEnterEmail') },
   ],
   code: [
@@ -58,7 +58,7 @@ const buttonText = computed(() => {
 })
 
 async function getCode() {
-  if (!postData.email) {
+  if (!postData.account) {
     showNotify({ type: 'warning', message: t('forgotPassword.pleaseEnterEmail') })
     return
   }
@@ -77,10 +77,10 @@ async function getCode() {
     <van-form :model="postData" :rules="rules" validate-trigger="onSubmit" @submit="reset">
       <div class="rounded-3xl overflow-hidden">
         <van-field
-          v-model.trim="postData.email"
-          :rules="rules.email"
-          name="email"
-          :placeholder="$t('forgotPassword.email')"
+          v-model.trim="postData.account"
+          :rules="rules.account"
+          name="account"
+          :placeholder="$t('forgotPassword.account')"
         />
       </div>
 

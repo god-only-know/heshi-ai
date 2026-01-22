@@ -80,10 +80,6 @@ const routers: RouteRecordRaw[] = [
     path: '/forgot-password',
     component: () => import('@/pages/forgot-password/index.vue'),
   },
-  // {
-  //   path: '/mock',
-  //   component: () => import('@/pages/mock/index.vue'),
-  // },
   {
     path: '/register',
     component: () => import('@/pages/register/index.vue'),
@@ -99,6 +95,28 @@ const routers: RouteRecordRaw[] = [
   {
     path: '/unocss',
     component: () => import('@/pages/unocss/index.vue'),
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('@/pages/admin/layout.vue'),
+    meta: {
+      // requiresAuth: true,
+      // requiresAdmin: true,
+    },
+    redirect: '/admin/users',
+    children: [
+      {
+        path: '/admin/users',
+        name: 'AdminUsers',
+        component: () => import('@/pages/admin/users/index.vue'),
+        meta: {
+          title: '用户管理',
+          // requiresAuth: true,
+          // requiresAdmin: true,
+        },
+      },
+    ],
   },
 ]
 export default routers

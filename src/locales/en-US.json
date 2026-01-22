@@ -7,7 +7,6 @@
   "navbar": {
     "Home": "Home",
     "Profile": "Profile",
-    "Mock": "🗂️ Mock",
     "Charts": "📊 Charts",
     "UnoCSS": "⚡ UnoCSS",
     "Counter": "🍍 Persistent State",
@@ -37,13 +36,6 @@
     "login": "Login",
     "settings": "Settings",
     "docs": "Docs"
-  },
-
-  "mock": {
-    "fromAsyncData": "Data from asynchronous requests",
-    "noData": "No data",
-    "pull": "Pull",
-    "reset": "Reset"
   },
 
   "charts": {
@@ -79,8 +71,10 @@
   "login": {
     "login": "Sign In",
     "logout": "Sign Out",
+    "account": "Account",
     "email": "Email",
     "password": "Password",
+    "pleaseEnterAccount": "Please enter account",
     "pleaseEnterEmail": "Please enter email",
     "pleaseEnterPassword": "Please enter password",
     "signUp": "Click to sign up",

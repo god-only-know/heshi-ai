@@ -42,13 +42,16 @@ function errorHandler(error: RequestError): Promise<any> {
       })
     }
     // 401 未登录/未授权
-    if (status === 401 && data.data && data.data.isLogin) {
+    if (status === 401) {
       showNotify({
         type: 'danger',
-        message: 'Authorization verification failed',
+        message: (data && data.message) || 'Authorization verification failed',
       })
-      // 如果你需要直接跳转登录页面
-      // location.replace(loginRoutePath)
+      // 清除token
+      localStorage.removeItem(STORAGE_TOKEN_KEY)
+      // 重定向到登录页，保存当前路径用于登录后返回
+      const currentPath = window.location.pathname + window.location.search
+      window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`
     }
   }
   return Promise.reject(error)

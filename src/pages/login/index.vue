@@ -18,13 +18,13 @@ watch(
 )
 
 const postData = reactive({
-  email: '',
+  account: '',
   password: '',
 })
 
 const rules = reactive({
-  email: [
-    { required: true, message: t('login.pleaseEnterEmail') },
+  account: [
+    { required: true, message: t('login.pleaseEnterAccount') },
   ],
   password: [
     { required: true, message: t('login.pleaseEnterPassword') },
@@ -37,17 +37,26 @@ async function login() {
     // 使用RSA加密密码
     const encryptedPassword = encryptWithRSA(postData.password)
     await userStore.login({
-      email: postData.email,
+      account: postData.account,
       password: encryptedPassword,
     })
     const { redirect, ...othersQuery } = router.currentRoute.value.query
     console.log('redirect:', redirect)
-    router.push({
-      path: redirect as string,
-      query: {
-        ...othersQuery,
-      },
-    })
+
+    // 登录成功后跳转
+    if (redirect && typeof redirect === 'string') {
+      // 如果有redirect参数，跳转到指定页面
+      router.push({
+        path: redirect,
+        query: {
+          ...othersQuery,
+        },
+      })
+    }
+    else {
+      // 否则跳转到首页
+      router.push({ name: 'home' })
+    }
   }
   finally {
     loading.value = false
@@ -66,10 +75,10 @@ async function login() {
     <van-form :model="postData" :rules="rules" validate-trigger="onSubmit" @submit="login">
       <div class="rounded-3xl overflow-hidden">
         <van-field
-          v-model="postData.email"
-          :rules="rules.email"
-          name="email"
-          :placeholder="$t('login.email')"
+          v-model="postData.account"
+          :rules="rules.account"
+          name="account"
+          :placeholder="$t('login.account')"
         />
       </div>
 
@@ -94,13 +103,5 @@ async function login() {
         </van-button>
       </div>
     </van-form>
-
-    <GhostButton block to="register" class="mt-18">
-      {{ $t('login.signUp') }}
-    </GhostButton>
-
-    <GhostButton block to="forgot-password">
-      {{ $t('login.forgotPassword') }}
-    </GhostButton>
   </div>
 </template>

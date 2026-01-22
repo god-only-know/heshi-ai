@@ -4,6 +4,10 @@ declare module 'vue-router' {
     title?: string
     /** keepalive */
     keepAlive?: boolean
+    /** requires authentication */
+    requiresAuth?: boolean
+    /** requires admin role */
+    requiresAdmin?: boolean
   }
 }
 export {}

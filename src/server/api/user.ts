@@ -11,9 +11,9 @@ const userApis: ApiHandler[] = [
   {
     method: 'POST',
     path: '/api/auth/login',
-    handler: async (params: { email: string, password: string }) => {
-      const { email, password } = params
-      const result = await userService.login(email, password)
+    handler: async (params: { account: string, password: string }) => {
+      const { account, password } = params
+      const result = await userService.login(account, password)
       return result
     },
   },
@@ -28,7 +28,7 @@ const userApis: ApiHandler[] = [
   },
   {
     method: 'GET',
-    path: '/api/user/me',
+    path: '/api/user/info',
     handler: async () => {
       const token = getToken()
       const userInfo = await userService.getUserInfo(token)
@@ -38,9 +38,9 @@ const userApis: ApiHandler[] = [
   {
     method: 'POST',
     path: '/api/user/register',
-    handler: async (params: { email: string, password: string, nickname?: string }) => {
-      const { email, password, nickname } = params
-      const result = await userService.register(email, password, nickname)
+    handler: async (params: { account: string, password: string, nickname?: string }) => {
+      const { account, password, nickname } = params
+      const result = await userService.register(account, password, nickname)
       return result
     },
   },
